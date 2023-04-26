@@ -13,12 +13,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/getDevice', async (req, res) => {
     try {
+        const deviceId = req.query.deviceid;
+
         const connection = new ewelink({
             email: login,
             password: pass,
             region: region,
         });
-        const deviceId = req.query.deviceid;
+
         const device = await connection.getDevice(deviceId);
         if (device) {
             res.json(device.params);
@@ -38,7 +40,9 @@ app.get('/getDevices', async (req, res) => {
             password: pass,
             region: region,
         });
+
         const devices = await connection.getDevices();
+        console.log(devices);
         res.json(devices);
     } catch (error) {
         console.error('Error fetching devices:', error);
@@ -46,16 +50,18 @@ app.get('/getDevices', async (req, res) => {
     }
 });
 
+
 app.get('/setChannel', async (req, res) => {
     try {
+        const deviceId = req.query.deviceid;
+        const channel = parseInt(req.query.channel);
+        const state = req.query.state;
+
         const connection = new ewelink({
             email: login,
             password: pass,
             region: region,
         });
-        const deviceId = req.query.deviceid;
-        const channel = parseInt(req.query.channel);
-        const state = req.query.state;
 
         // Получить текущий статус устройства
         const device = await connection.getDevice(deviceId);
@@ -76,11 +82,6 @@ app.get('/setChannel', async (req, res) => {
 
 app.get('/getSensorData', async (req, res) => {
     try {
-        const connection = new ewelink({
-            email: login,
-            password: pass,
-            region: region,
-        });
         const deviceId = req.query.deviceid;
         const sensorData = await connection.getDevice(deviceId);
         res.json(sensorData.params);
@@ -91,11 +92,6 @@ app.get('/getSensorData', async (req, res) => {
 });
 app.get('/setBrightness', async (req, res) => {
     try {
-        const connection = new ewelink({
-            email: 'dreamteam.iot@mail.com',
-            password: 'edtr61iot',
-            region: 'eu',
-        });
         const deviceId = req.query.deviceid;
         const brightness = parseInt(req.query.brightness);
 
@@ -109,11 +105,6 @@ app.get('/setBrightness', async (req, res) => {
 
 app.get('/setColor', async (req, res) => {
     try {
-        const connection = new ewelink({
-            email: 'dreamteam.iot@mail.com',
-            password: 'edtr61iot',
-            region: 'eu',
-        });
         const deviceId = req.query.deviceid;
         const r = parseInt(req.query.r);
         const g = parseInt(req.query.g);
@@ -133,11 +124,6 @@ app.get('/setColor', async (req, res) => {
 app.post('/setSwitchState', async (req, res) => {
     const deviceId = req.body.deviceid;
     const newState = req.body.state;
-    const connection = new ewelink({
-        email: 'dreamteam.iot@mail.com',
-        password: 'edtr61iot',
-        region: 'eu',
-    });
     const result = await connection.setDevicePowerState(deviceId, newState);
     if (result && result.error === 0) {
         res.json({ success: true });
@@ -150,7 +136,6 @@ app.post('/setColor', jsonParser, async (req, res) => {
     console.log(`Setting color to R: ${r}, G: ${g}, B: ${b}`);
 
     try {
-        const connection = new ewelink({ email: login, password: pass, region: region });
         const device = await connection.getDevice(deviceId);
         const currentParams = device.params;
 
@@ -170,6 +155,9 @@ app.post('/setColor', jsonParser, async (req, res) => {
         res.json({ success: false });
     }
 });
+
+
+
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
