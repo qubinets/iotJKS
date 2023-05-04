@@ -5,6 +5,7 @@ const lampId = '100123e422';
 const tempHumiditySensorId = 'a480056d1b'; // Замените на ID вашего датчика температуры/влажности
 const getDevicesButton = document.getElementById("getDevicesButton");
 const channelButtons = document.querySelectorAll('#channelButtons button');
+const colorPicker = document.getElementById('colorPicker');
 
 function getSensorData() {
     fetch(`/getSensorData?deviceid=${tempHumiditySensorId}`)
@@ -21,18 +22,16 @@ function getDevices() {
         .then((response) => response.json())
         .then((devices) => {
             displayDevices(devices);
-            getDevicesButton.disabled = false;
         })
         .catch(function () {
             console.error();
-            getDevicesButton.disabled = false;
         })
         .finally(() => getDevicesButton.disabled = false);
 }
 
 function updateDeviceStatus(deviceId) {
     fetch(`/getDevice?deviceid=${deviceId}`)
-        .then(response => response.json)
+        .then(response => response.json())
         .then(function (device) {
             displayStatusIndicator(device)
         })
@@ -42,10 +41,44 @@ function updateDeviceStatus(deviceId) {
 function setChannel(channel, state, button) {
     button.disabled = true;
     fetch(`/setChannel?deviceid=${switchId}&channel=${channel}&state=${state}`)
-        .then(response => response.json)
+        .then(response => response.json())
         .catch(error => console.log(error))
         .finally(() => button.disabled = false)
 }
+
+function setColor(deviceId, r, g, b) {
+    var params = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ deviceId, r, g, b }),
+    }
+
+    fetch('/setColor', params)
+        .then(
+            (response) => { 
+                response.json() 
+            }
+        ).then(
+            (result) => {
+                if (result.success) {
+                    console.log('Color updated successfully');
+                }
+            }
+        )
+        .catch(
+            (error) => {
+                console.log(error)
+                console.log('Failed to update color');
+            }
+
+        );
+}
+
+getDevicesButton.addEventListener('click', function () {
+    getDevices();
+});
 
 channelButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -56,56 +89,39 @@ channelButtons.forEach(button => {
     });
 });
 
-getDevicesButton.addEventListener('click', function () {
-    getDevices();
+colorPicker.addEventListener('change', async (event) => {
+    const newColor = event.target.value;
+    const deviceId = '100123e422'; // замените этот идентификатор на нужный
+    const r = parseInt(newColor.slice(1, 3), 16);
+    const g = parseInt(newColor.slice(3, 5), 16);
+    const b = parseInt(newColor.slice(5, 7), 16);
+    await setColor(deviceId, r, g, b);
 });
 
-/*
 async function getDeviceParameters() {
-const response = await fetch(`/getDevice?deviceid=100123e422`); // Замените на ID вашей лампы
-const deviceParameters = await response.json();
-console.log(deviceParameters);
+    const response = await fetch(`/getDevice?deviceid=100123e422`); // Замените на ID вашей лампы
+    const deviceParameters = await response.json();
+    console.log(deviceParameters);
 }
-async function setSwitchState(deviceId, newState) {
-const response = await fetch('/setSwitchState', {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-},
-body: JSON.stringify({ deviceid: deviceId, state: newState }),
-});
-const result = await response.json();
-if (result.success) {
-console.log('Switch state updated successfully');
-} else {
-console.log('Failed to update switch state');
-}
-}
-async function setColor(deviceId, r, g, b) {
-const response = await fetch('/setColor', {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-},
-body: JSON.stringify({ deviceId, r, g, b }),
-});
 
-const result = await response.json();
-if (result.success) {
-console.log('Color updated successfully');
-} else {
-console.log('Failed to update color');
-}
-}
-document.getElementById('colorPicker').addEventListener('change', async (event) => {
-const newColor = event.target.value;
-const deviceId = '100123e422'; // замените этот идентификатор на нужный
-const r = parseInt(newColor.slice(1, 3), 16);
-const g = parseInt(newColor.slice(3, 5), 16);
-const b = parseInt(newColor.slice(5, 7), 16);
-await setColor(deviceId, r, g, b);
-});
-/* 
+// async function setSwitchState(deviceId, newState) {
+//     const response = await fetch('/setSwitchState', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ deviceid: deviceId, state: newState }),
+//     });
+//     const result = await response.json();
+//     if (result.success) {
+//         console.log('Switch state updated successfully');
+//     } else {
+//         console.log('Failed to update switch state');
+//     }
+// }
+
+
+
+
+
 getDeviceParameters();
-
-*/
