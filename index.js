@@ -2,6 +2,7 @@ const express = require('express');
 const ewelink = require('ewelink-api');
 const app = express();
 const port = 3000;
+
 const login = 'dreamteam.iot@mail.com'
 const pass = 'edtr61iot'
 const region = 'eu'
@@ -49,7 +50,6 @@ app.get('/getDevices', async (req, res) => {
         res.status(500).json({ error: 'Error fetching devices' });
     }
 });
-
 
 app.get('/setChannel', async (req, res) => {
     const deviceId = req.query.deviceid;
@@ -156,7 +156,7 @@ app.post('/setColor', jsonParser, async (req, res) => {
     try {
         const device = await connection.getDevice(deviceId);
         const currentParams = device.params;
-        
+
         const updatedParams = {
             ...currentParams,
             colorR: r,

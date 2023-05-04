@@ -3,6 +3,7 @@ import { displayDevices, displaySensorData, displayChannelSwtich, displayStatusI
 const switchId = '10017b7136'; // Замените на ID вашего устройства
 const lampId = '100123e422';
 const tempHumiditySensorId = 'a480056d1b'; // Замените на ID вашего датчика температуры/влажности
+const dimmerIp = 'http://192.168.1.8:8081/zeroconf/dimmable';
 const getDevicesButton = document.getElementById("getDevicesButton");
 const channelButtons = document.querySelectorAll('#channelButtons button');
 const colorPicker = document.getElementById('colorPicker');
@@ -56,14 +57,13 @@ function setColor(deviceId, r, g, b) {
     }
 
     fetch('/setColor', params)
+        .then(response => response.json())
         .then(
-            (response) => { 
-                response.json() 
-            }
-        ).then(
             (result) => {
                 if (result.success) {
                     console.log('Color updated successfully');
+                } else if (result.error) {
+                    console.log('Failed to update color');
                 }
             }
         )
@@ -72,9 +72,43 @@ function setColor(deviceId, r, g, b) {
                 console.log(error)
                 console.log('Failed to update color');
             }
-
         );
 }
+
+function getDeviceParameters() {
+    fetch(`/getDevice?deviceid=` + lampId)
+        .then((response) => {
+            var deviceParameters = response.json();
+            console.log(deviceParameters);
+        })
+        .catch(error => console.log(error))
+}
+
+function setBrightness() {
+    var body = {
+        "deviceid": "10016705ce",
+        "data": {
+            "switch": "on",
+            "brightness": 0,
+            "mode": 0,
+            "brightmin": 1,
+            "brightmax": 255
+        }
+    }
+
+    var params = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+    }
+
+    fetch(dimmerIp, params)
+        .then((response) => response.json())
+        .catch(console.error);
+}
+
 
 getDevicesButton.addEventListener('click', function () {
     getDevices();
@@ -98,11 +132,6 @@ colorPicker.addEventListener('change', async (event) => {
     await setColor(deviceId, r, g, b);
 });
 
-async function getDeviceParameters() {
-    const response = await fetch(`/getDevice?deviceid=100123e422`); // Замените на ID вашей лампы
-    const deviceParameters = await response.json();
-    console.log(deviceParameters);
-}
 
 // async function setSwitchState(deviceId, newState) {
 //     const response = await fetch('/setSwitchState', {
@@ -119,9 +148,5 @@ async function getDeviceParameters() {
 //         console.log('Failed to update switch state');
 //     }
 // }
-
-
-
-
 
 getDeviceParameters();
