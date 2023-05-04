@@ -1,4 +1,4 @@
-import { displayDevices, displaySensorData, displayChannelSwtich, displayStatusIndicator } from './display.js';
+import { displayDevices, displaySensorData, displayChannelSwtich, displayStatusIndicator, setChannelBtnActive } from './display.js';
 
 const switchId = '10017b7136'; // Замените на ID вашего устройства
 const lampId = '100123e422';

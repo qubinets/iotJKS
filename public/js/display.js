@@ -41,3 +41,14 @@ export function displayStatusIndicator(device) {
         statusIndicator.classList.toggle('text-danger', status !== 'on');
     }
 }
+
+export function setChannelBtnActive(state) {
+    document.querySelectorAll('#channelButtons button').forEach(button => {
+        if (state) {
+            button.disabled = false;
+        } else {
+            button.disabled = true;
+        }
+    }
+    )
+}
