@@ -18,6 +18,7 @@ export function displayDevices(devices) {
     }
 }
 
+// temperature/humidity information
 export function displaySensorData(devices) {
     const temperature = sensorData.temperature / 100; // Деление на 100
     const humidity = sensorData.humidity / 100; // Деление на 100
@@ -26,10 +27,11 @@ export function displaySensorData(devices) {
     document.getElementById('humidity').textContent = `${humidity.toFixed(2)}`; // Округление до 2 знаков после запятой
 }
 
-export function displayChannelSwtich(button, newState) {
+// change button color (Manual channels control)
+export function displayChannelSwitch(button, newState) {
     button.textContent = newState === 'on' ? 'ON' : 'OFF';
-    button.classList.toggle('btn-outline-success', newState === 'on');
-    button.classList.toggle('btn-outline-danger', newState !== 'on');
+    button.classList.toggle('btn-success', newState === 'on');
+    button.classList.toggle('btn-failed', newState === 'off');
 }
 
 export function displayStatusIndicator(device) {

@@ -1,4 +1,4 @@
-import { displayDevices, displaySensorData, displayChannelSwtich, displayStatusIndicator, setChannelBtnActive } from './display.js';
+import { displayDevices, displaySensorData, displayChannelSwitch, displayStatusIndicator, setChannelBtnActive } from './display.js';
 
 const switchId = '10017b7136'; // Замените на ID вашего устройства
 const lampId = '100123e422';
@@ -39,12 +39,14 @@ function updateDeviceStatus(deviceId) {
         .catch(error => console.log(error))
 }
 
-function setChannel(channel, state, button) {
-    button.disabled = true;
+function setChannel(channel, state) {
+    setChannelBtnActive(false);
     fetch(`/setChannel?deviceid=${switchId}&channel=${channel}&state=${state}`)
-        .then(response => response.json())
+        .then(response => response.json)
         .catch(error => console.log(error))
-        .finally(() => button.disabled = false)
+        .finally(() => {
+            setChannelBtnActive(true);
+        });
 }
 
 function setColor(deviceId, r, g, b) {
@@ -118,7 +120,7 @@ channelButtons.forEach(button => {
     button.addEventListener('click', () => {
         const channel = button.getAttribute('data-channel');
         const newState = button.textContent === 'ON' ? 'off' : 'on';
-        displayChannelSwtich(button, newState);
+        displayChannelSwitch(button, newState);
         setChannel(channel, newState, button);
     });
 });
