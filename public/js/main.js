@@ -3,16 +3,24 @@ import { displayDevices, displaySensorData, displayChannelSwitch, displayStatusI
 const switchId = '10017b7136'; // Замените на ID вашего устройства
 const lampId = '100123e422';
 const tempHumiditySensorId = 'a480056d1b'; // Замените на ID вашего датчика температуры/влажности
-const dimmerIp = 'http://192.168.1.8:8081/zeroconf/dimmable';
+const dimmerIp = 'http://192.168.1.12:8081/zeroconf/dimmable';
+var tasmotaIp = "192.168.1.2";
 const getDevicesButton = document.getElementById("getDevicesButton");
 const channelButtons = document.querySelectorAll('#channelButtons button');
 const colorPicker = document.getElementById('colorPicker');
+// add
+const sliderLampBrightness = document.getElementById("lampBrightnessSlider");
 
-function getSensorData() {
-    fetch(`/getSensorData?deviceid=${tempHumiditySensorId}`)
+const sliderLedBrightness = document.getElementById("ledBrightnessSlider");
+const changeLedColorButton = document.getElementById("changeLedColorButton");
+const ledSchemeSelect = document.getElementById("ledSchemeSelect");
+const ledSpeedSlider = document.getElementById("ledSpeedSlider");
+
+function getTempSensorData() {
+    fetch(`/getTempSensorData?deviceid=${tempHumiditySensorId}`)
         .then((response) => response.json())
         .then(function (sensorData) {
-            displaySensorData(sensorData);
+            displaySensorData(sensorData.humidity, sensorData.temperature);
         })
         .catch(console.error);
 }
@@ -86,12 +94,104 @@ function getDeviceParameters() {
         .catch(error => console.log(error))
 }
 
-function setBrightness() {
+// add (lamp brigtness)
+// function setLampBrightness(brightness) {
+
+
+//     fetch(dimmerIp, params)
+//         .then((response) => response.json())
+//         .catch(console.error);
+// }
+
+// Получение значения ползунка и вызов функции setBrightness
+// sliderLampBrightness.addEventListener("input", function () {
+//     var brightness = this.value;
+//     setBrightness(brightness);
+// });
+
+// LED tasmota
+function setLedBrightness(brightness) {
+    var url = `http://${tasmotaIp}/cm?cmnd=Dimmer%20${brightness}`;
+
+    var params = {
+        method: 'GET',
+        mode: 'no-cors',
+    };
+
+    fetch(url, params)
+        .then((response) => response.text())
+        .then((data) => console.log(data))
+        .catch((error) => console.error(error));
+}
+
+sliderLedBrightness.addEventListener("input", function () {
+    var brightness = this.value;
+    setLedBrightness(brightness);
+});
+
+
+function setLedColor(color) {
+    var rgb = color.substring(1); 
+
+    var url = `http://${tasmotaIp}/cm?cmnd=Color%20${rgb}`;
+
+    var params = {
+        method: 'GET',
+        mode: 'no-cors',
+    };
+
+    fetch(url, params)
+        .then(() => console.log('Color changed successfully'))
+        .catch((error) => console.error(error));
+}
+
+changeLedColorButton.addEventListener("click", function () {
+    var color = colorPicker.value;
+    setLedColor(color);
+});
+
+function setLedScheme(scheme) {
+    var url = `http://${tasmotaIp}/cm?cmnd=Scheme%20${scheme}`;
+
+    var params = {
+        method: 'GET',
+        mode: 'no-cors',
+    };
+
+    fetch(url, params)
+        .then(() => console.log('Mode is changed'))
+        .catch((error) => console.error(error));
+}
+
+ledSchemeSelect.addEventListener("change", function () {
+    var selectedScheme = ledSchemeSelect.value;
+    setLedScheme(selectedScheme);
+});
+
+function sedLedSpeed(speed) {
+    var url = `http://${tasmotaIp}/cm?cmnd=Speed%20${speed}`
+
+    var params = {
+        method: 'GET',
+        mode: 'no-cors',
+    };
+
+    fetch(url,params)
+    .then(() => console.log('Speed is changed'))
+    .catch((error) => console.error(error))
+}
+
+ledSpeedSlider.addEventListener("input", function () {
+    var value = this.value;
+    sedLedSpeed(value);
+});
+
+function setBrightness(brightness) {
     var body = {
         "deviceid": "10016705ce",
         "data": {
             "switch": "on",
-            "brightness": 0,
+            "brightness": brightness,
             "mode": 0,
             "brightmin": 1,
             "brightmax": 255
@@ -152,3 +252,5 @@ colorPicker.addEventListener('change', async (event) => {
 // }
 
 getDeviceParameters();
+
+setInterval(getTempSensorData, 5000);

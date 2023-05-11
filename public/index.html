@@ -14,24 +14,41 @@
 <body class="container">
     <ul class="nav nav-tabs nav-justified">
         <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+        <li><a data-toggle="tab" href="#newtab">New tab</a></li>
         <li><a data-toggle="tab" href="#graphs">Graphs</a></li>
+
     </ul>
 
-    <div class="tab-content">   
+    <div class="tab-content">
         <div id="home" class="tab-pane fade in active">
-            <h1 class="my-4">Sonoff Control</h1>
-            <button id="getDevicesButton" class="btn btn-primary my-3">Get Devices</button>
+            <h1 class="my-4" style="text-align: center;">Sonoff Control</h1>
+            <div class="text-center">
+                <button id="getDevicesButton" class="btn btn-primary my-3">Get Devices</button>
+            </div>
             <ul id="devicesList" class="list-group mb-4"></ul>
             <div id="sensorData" class="card mb-4">
                 <div class="card-body">
-                    <h5 class="card-title">Temperature/Humidity Sensor</h5>
-                    <p class="card-text">
-                        <i class="fas fa-thermometer-half"></i> Temperature: <span id="temperature"></span>°C<br>
-                        <i class="fas fa-tint"></i> Humidity: <span id="humidity"></span>%
-                    </p>
+                    <h2 class="card-title" style="text-align: center;">Temperature/Humidity Sensor</h2>
+                    <div class="data-row">
+                        <div class="data-item">
+                            <i class="fas fa-thermometer-half fa-lg h2"></i>
+                            <span class="data-label col-sm-12 h2">Temperature:</span>
+                            <span id="temperature" class="col-sm-12 h2"></span>
+                            <span class="col-sm-12 h2">°C</span>
+                        </div>
+                        <div class="data-item">
+                            <i class="fas fa-tint fa-lg h2"></i>
+                            <span class="data-label col-sm-12 h2">Humidity:</span>
+                            <span id="humidity" class="col-sm-12 h2"></span>
+                            <span class="col-sm-12 h2">%</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
+        <div id="newtab" class="tab-pane fade">
+            <h3> New tab</h3>
             <div class="container">
                 <h3 style="text-align: center;"> Manual channels control</h3>
                 <div id="channelButtons" class="d-grid gap-2 d-md-flex justify-content-md-start mb-4">
@@ -41,7 +58,23 @@
                     <button class="btn btn-outline-success" data-channel="4" id="channel_4">Channel 4</button>
                 </div>
             </div>
+            <br>
             <input type="color" id="colorPicker" value="#FF0000">
+            <!-- add -->
+            <!-- <input type="range" id="lampBrightnessSlider" min="0" max="100" value="0"> -->
+            </br>
+            <input type="range" id="ledBrightnessSlider" min="0" max="100" value="0">
+            </br>
+            <button id="changeLedColorButton">Change color</button>
+            </br>
+            <input type="range" id="ledSpeedSlider" min="0" max="40" value="40">
+            <select id="ledSchemeSelect">
+                <option value="0">Mode 1</option>
+                <option value="1">Mode 2</option>
+                <option value="2">Mode 3</option>
+                <option value="3">Mode 4</option>
+                <option value="4">Mode 5</option>
+            </select>
         </div>
 
         <div id="graphs" class="tab-pane fade">

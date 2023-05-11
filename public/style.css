@@ -40,3 +40,17 @@ ul.nav.nav-tabs.nav-justified {
 .h3 {
     text-align: center;
 }
+
+.data-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.data-item {
+    display: flex;
+    align-items: center;
+}
+
+.data-label {
+    margin-left: 10px;
+}

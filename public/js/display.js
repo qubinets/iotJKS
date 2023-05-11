@@ -2,7 +2,6 @@ export function displayDevices(devices) {
     const devicesList = document.getElementById('devicesList');
     devicesList.innerHTML = '';
     for (const device of devices) {
-        console.log(device)
         const li = document.createElement('li');
         li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
         const deviceName = document.createElement('span');
@@ -19,12 +18,12 @@ export function displayDevices(devices) {
 }
 
 // temperature/humidity information
-export function displaySensorData(devices) {
-    const temperature = sensorData.temperature / 100; // Деление на 100
-    const humidity = sensorData.humidity / 100; // Деление на 100
+export function displaySensorData(humidity,temperature) {
+    const converted_temperature = temperature / 100; // Деление на 100
+    const converted_humidity = humidity / 100; // Деление на 100
 
-    document.getElementById('temperature').textContent = `${temperature.toFixed(2)}`; // Округление до 2 знаков после запятой
-    document.getElementById('humidity').textContent = `${humidity.toFixed(2)}`; // Округление до 2 знаков после запятой
+    document.getElementById('temperature').textContent = `${converted_temperature.toFixed(2)}`; // Округление до 2 знаков после запятой
+    document.getElementById('humidity').textContent = `${converted_humidity.toFixed(2)}`; // Округление до 2 знаков после запятой
 }
 
 // change button color (Manual channels control)

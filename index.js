@@ -1,5 +1,6 @@
 const express = require('express');
 const ewelink = require('ewelink-api');
+
 const app = express();
 const port = 3000;
 
@@ -83,11 +84,18 @@ app.get('/setChannel', async (req, res) => {
     }
 });
 
-app.get('/getSensorData', async (req, res) => {
+app.get('/getTempSensorData', async (req, res) => {
+    const connection = new ewelink({
+        email: login,
+        password: pass,
+        region: region,
+    });
+
     try {
         const deviceId = req.query.deviceid;
         const sensorData = await connection.getDevice(deviceId);
         res.json(sensorData.params);
+        console.log(sensorData);
     } catch (error) {
         console.error('Error fetching sensor data:', error);
         res.status(500).json({ error: 'Error fetching sensor data' });
@@ -173,8 +181,6 @@ app.post('/setColor', jsonParser, async (req, res) => {
         res.json({ success: false });
     }
 });
-
-
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
