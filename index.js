@@ -1,6 +1,6 @@
 const express = require('express');
 const ewelink = require('ewelink-api');
-
+const axios = require('axios');
 const app = express();
 const port = 3000;
 
@@ -102,41 +102,45 @@ app.get('/getTempSensorData', async (req, res) => {
     }
 });
 
-app.get('/setBrightness', async (req, res) => {
-    try {
-        const deviceId = req.query.deviceid;
-        const brightness = parseInt(req.query.brightness);
+app.post('/setBrightness', async (req, res) => {
+    const { deviceId, brightness } = req.body;
 
-        const result = await connection.setDevicePowerState(deviceId, 'on', { outlet: 0, inching: 0, zyx_clear_timers: 0, level: brightness });
-        res.json(result);
-    } catch (error) {
-        console.error('Error setting brightness:', error);
-        res.status(500).json({ error: 'Failed to set brightness' });
+    if (!deviceId || !brightness) {
+        return res.status(400).json({ success: false, message: 'Missing device ID or brightness' });
     }
-});
 
-app.get('/setColor', async (req, res) => {
+    const data = {
+        deviceid: deviceId,
+        data: {
+            switch: 'on',
+            brightness: parseInt(brightness),
+            mode: 0,
+            brightmin: 1,
+            brightmax: 255,
+        },
+    };
+
     try {
-        const deviceId = req.query.deviceid;
-        const r = parseInt(req.query.r);
-        const g = parseInt(req.query.g);
-        const b = parseInt(req.query.b);
-
-        // Замените 1 на номер канала, отвечающего за цвет
-        const channel = 1;
-        const color = [r, g, b].join(',');
-
-        const connection = new ewelink({
-            email: login,
-            password: pass,
-            region: region,
+        // Запрос на ваше устройство
+        const response = await axios({
+            method: 'post',
+            url: 'http://192.168.1.12:8081/zeroconf/dimmable',
+            headers: {
+                'Content-Length': JSON.stringify(data).length.toString(),
+                'Content-Type': 'application/json'
+            },
+            data: data
         });
 
-        const result = await connection.setDevicePowerState(deviceId, 'on', { outlet: channel, zyx_mode: 2, zyx_data: color });
-        res.json(result);
+        if (response.status !== 200) {
+            throw new Error('Device did not respond with status 200');
+        }
+
+        console.log('Request sent:', data);
+        res.json({ success: true, message: 'Brightness updated successfully' });
     } catch (error) {
-        console.error('Error setting color:', error);
-        res.status(500).json({ error: 'Failed to set color' });
+        console.error('Error updating brightness:', error);
+        res.status(500).json({ success: false, message: 'Failed to update brightness' });
     }
 });
 
@@ -151,10 +155,7 @@ app.post('/setSwitchState', async (req, res) => {
     }
 });
 
-app.post('/setColor', jsonParser, async (req, res) => {
-    const { deviceId, r, g, b } = req.body;
-    console.log(`Setting color to R: ${r}, G: ${g}, B: ${b}`);
-
+app.get('/getDoorSensorData', async (req, res) => {
     const connection = new ewelink({
         email: login,
         password: pass,
@@ -162,26 +163,39 @@ app.post('/setColor', jsonParser, async (req, res) => {
     });
 
     try {
-        const device = await connection.getDevice(deviceId);
-        const currentParams = device.params;
+        const deviceId = req.query.deviceid;
+        const sensorData = await connection.getDevice(deviceId);
+        res.json(sensorData.params);
+        console.log(sensorData);
+    } catch (error) {
+        console.error('Error fetching sensor data:', error);
+        res.status(500).json({ error: 'Error fetching sensor data' });
+    }
+});
 
-        const updatedParams = {
-            ...currentParams,
-            colorR: r,
-            colorG: g,
-            colorB: b,
-        };
+app.get('/setDevicePowerState', async (req, res) => {
+    try {
+        const deviceId = req.query.deviceid;
 
-        const result = await connection.setDevicePowerState(deviceId, 'on', updatedParams);
-        console.log(result);
+        const connection = new ewelink({
+            email: login,
+            password: pass,
+            region: region,
+        });
 
-        res.json({ success: true });
-    } catch (err) {
-        console.error(`Error setting color: ${err}`);
-        res.json({ success: false });
+        const device = await connection.setDevicePowerState(deviceId);
+        if (device) {
+            res.json(device.params);
+        } else {
+            res.status(500).json({ error: 'Failed to fetch device data' });
+        }
+    } catch (error) {
+        console.error('Error fetching device data:', error);
+        res.status(500).json({ error: 'Error fetching device data' });
     }
 });
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
+

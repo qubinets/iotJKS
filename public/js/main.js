@@ -3,18 +3,21 @@ import { displayDevices, displaySensorData, displayChannelSwitch, displayStatusI
 const switchId = '10017b7136'; // Замените на ID вашего устройства
 const lampId = '100123e422';
 const tempHumiditySensorId = 'a480056d1b'; // Замените на ID вашего датчика температуры/влажности
-const dimmerIp = 'http://192.168.1.12:8081/zeroconf/dimmable';
+const doorSensorId = '100187b85f';
+const smartSocketId = '100188b7b6';
 var tasmotaIp = "192.168.1.2";
 const getDevicesButton = document.getElementById("getDevicesButton");
 const channelButtons = document.querySelectorAll('#channelButtons button');
 const colorPicker = document.getElementById('colorPicker');
-// add
 const sliderLampBrightness = document.getElementById("lampBrightnessSlider");
-
+// led tasmota
 const sliderLedBrightness = document.getElementById("ledBrightnessSlider");
-const changeLedColorButton = document.getElementById("changeLedColorButton");
 const ledSchemeSelect = document.getElementById("ledSchemeSelect");
 const ledSpeedSlider = document.getElementById("ledSpeedSlider");
+let isDoorOpen = "";
+// socket
+let socketState = "";
+const socketStateBtn = document.getElementById("socketStateBtn");
 
 function getTempSensorData() {
     fetch(`/getTempSensorData?deviceid=${tempHumiditySensorId}`)
@@ -24,6 +27,64 @@ function getTempSensorData() {
         })
         .catch(console.error);
 }
+
+function getDoorSensorData() {
+    fetch(`/getDoorSensorData?deviceid=${doorSensorId}`)
+        .then((response) => response.json())
+        .then(function (sensorData) {
+            isDoorOpen = sensorData.switch;
+            console.log(isDoorOpen);
+        })
+        .catch(console.error);
+}
+
+function getSocketStatus() {
+    fetch(`/getDevice?deviceid=${smartSocketId}`)
+    .then((response) => response.json())
+        .then(function (sensorData) {
+            socketState = sensorData.switch;
+            console.log("Socket:"+socketState);
+        })
+        .catch(console.error);
+}
+
+function setDeviceState() {
+    fetch(`/setDevicePowerState?deviceid=${smartSocketId}`)
+        .then((response) => response.json())
+        .then(function (sensorData) {
+            displaySensorData(sensorData.humidity, sensorData.temperature);
+        })
+        .catch(console.error);
+}
+
+// function checkDoorStatus() {
+//     if (isDoorOpen === "on") {
+//         // Выполните необходимые действия, когда дверь открыта
+//         fetch(`/setChannel?deviceid=${switchId}&channel=1&state=off`)
+//             .then((response) => {
+//                 if (response.ok) {
+//                     console.log("Дверь была открыта.");
+//                 } else {
+//                     console.error("Произошла ошибка при выполнении действия.");
+//                 }
+//             })
+//             .catch((error) => {
+//                 console.error("Произошла ошибка при выполнении запроса:", error);
+//             });
+//     } else {
+//         fetch(`/setChannel?deviceid=${switchId}&channel=1&state=on`)
+//         .then((response) => {
+//             if (response.ok) {
+//                 console.log("Дверь была закрыта.");
+//             } else {
+//                 console.error("Произошла ошибка при выполнении действия.");
+//             }
+//         })
+//         .catch((error) => {
+//             console.error("Произошла ошибка при выполнении запроса:", error);
+//         });
+//     }
+// }
 
 function getDevices() {
     getDevicesButton.disabled = true;
@@ -57,34 +118,6 @@ function setChannel(channel, state) {
         });
 }
 
-function setColor(deviceId, r, g, b) {
-    var params = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ deviceId, r, g, b }),
-    }
-
-    fetch('/setColor', params)
-        .then(response => response.json())
-        .then(
-            (result) => {
-                if (result.success) {
-                    console.log('Color updated successfully');
-                } else if (result.error) {
-                    console.log('Failed to update color');
-                }
-            }
-        )
-        .catch(
-            (error) => {
-                console.log(error)
-                console.log('Failed to update color');
-            }
-        );
-}
-
 function getDeviceParameters() {
     fetch(`/getDevice?deviceid=` + lampId)
         .then((response) => {
@@ -93,21 +126,6 @@ function getDeviceParameters() {
         })
         .catch(error => console.log(error))
 }
-
-// add (lamp brigtness)
-// function setLampBrightness(brightness) {
-
-
-//     fetch(dimmerIp, params)
-//         .then((response) => response.json())
-//         .catch(console.error);
-// }
-
-// Получение значения ползунка и вызов функции setBrightness
-// sliderLampBrightness.addEventListener("input", function () {
-//     var brightness = this.value;
-//     setBrightness(brightness);
-// });
 
 // LED tasmota
 function setLedBrightness(brightness) {
@@ -129,7 +147,6 @@ sliderLedBrightness.addEventListener("input", function () {
     setLedBrightness(brightness);
 });
 
-
 function setLedColor(color) {
     var rgb = color.substring(1); 
 
@@ -145,7 +162,7 @@ function setLedColor(color) {
         .catch((error) => console.error(error));
 }
 
-changeLedColorButton.addEventListener("click", function () {
+colorPicker.addEventListener('input', async (event) => {
     var color = colorPicker.value;
     setLedColor(color);
 });
@@ -168,7 +185,7 @@ ledSchemeSelect.addEventListener("change", function () {
     setLedScheme(selectedScheme);
 });
 
-function sedLedSpeed(speed) {
+function setLedSpeed(speed) {
     var url = `http://${tasmotaIp}/cm?cmnd=Speed%20${speed}`
 
     var params = {
@@ -183,34 +200,8 @@ function sedLedSpeed(speed) {
 
 ledSpeedSlider.addEventListener("input", function () {
     var value = this.value;
-    sedLedSpeed(value);
+    setLedSpeed(value);
 });
-
-function setBrightness(brightness) {
-    var body = {
-        "deviceid": "10016705ce",
-        "data": {
-            "switch": "on",
-            "brightness": brightness,
-            "mode": 0,
-            "brightmin": 1,
-            "brightmax": 255
-        }
-    }
-
-    var params = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-    }
-
-    fetch(dimmerIp, params)
-        .then((response) => response.json())
-        .catch(console.error);
-}
-
 
 getDevicesButton.addEventListener('click', function () {
     getDevices();
@@ -225,15 +216,35 @@ channelButtons.forEach(button => {
     });
 });
 
-colorPicker.addEventListener('change', async (event) => {
-    const newColor = event.target.value;
-    const deviceId = '100123e422'; // замените этот идентификатор на нужный
-    const r = parseInt(newColor.slice(1, 3), 16);
-    const g = parseInt(newColor.slice(3, 5), 16);
-    const b = parseInt(newColor.slice(5, 7), 16);
-    await setColor(deviceId, r, g, b);
-});
+// lamp brightness slider
+sliderLampBrightness.addEventListener('input', async (event) => {
+    const newBrightness = event.target.value;
+    const deviceId = '10016705ce'; 
 
+    try {
+        const response = await fetch('/setBrightness', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ deviceId: deviceId, brightness: newBrightness }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const jsonResponse = await response.json();
+
+        if (!jsonResponse.success) {
+            throw new Error('Failed to update brightness');
+        }
+
+        console.log('Brightness updated successfully');
+    } catch (error) {
+        console.error('Error sending brightness change:', error);
+    }
+});
 
 // async function setSwitchState(deviceId, newState) {
 //     const response = await fetch('/setSwitchState', {
@@ -254,3 +265,8 @@ colorPicker.addEventListener('change', async (event) => {
 getDeviceParameters();
 
 setInterval(getTempSensorData, 5000);
+
+setInterval(getDoorSensorData, 2000);
+// setInterval(getSocketStatus, 2000);
+
+// setInterval(checkDoorStatus, 2000);
