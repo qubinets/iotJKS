@@ -43,12 +43,19 @@
         </div>
         <div class="cards">
 
-
-            <div class="card shadow card-control">
-                <h3>Lamp brightness control</h3>
-                <input type="range" min="1" max="100" value="1" id="lampBrightnessSlider">
-            </div>
-
+                <div class="card shadow">
+                    <div class="card-body ">
+                        <h3 class="card-title">Channel 1</h3>
+                    </div>
+                    <a href="#" class="btn btn-primary stretched-link channelBtn" data-channel="1" id="channelButton1"></a>
+                </div>
+    
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h3 class="card-title">Channel 2</h3>
+                    </div>
+                    <a href="#" class="btn btn-primary stretched-link channelBtn" data-channel="2" id="channelButton2"></a>
+                </div>
         </div>
     </div>
 
@@ -59,6 +66,7 @@
 
     <!-- Scripts -->
     <script type="module" src="js/outdoor_script.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 
 </html>

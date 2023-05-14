@@ -1,7 +1,22 @@
 import * as displayFunctions from './display.js';
 
+const tempHumiditySensorId = 'a480056d1b'; // Замените на ID вашего датчика температуры/влажности
+const switchId = '10017b7136'; // Замените на ID вашего устройства
+
 // HTML
 const getDevicesButton = document.getElementById("getDevicesButton");
+const channelButtons = document.querySelectorAll(".channelBtn");
+
+
+function setChannel(channel, state) {
+    displayFunctions.setChannelBtnActive(false);
+    fetch(`/setChannel?deviceid=${switchId}&channel=${channel}&state=${state}`)
+        .then(response => response.json)
+        .catch(error => console.log(error))
+        .finally(() => {
+            displayFunctions.setChannelBtnActive(true);
+        });
+}
 
 // API requests
 function getDevices() {
@@ -26,5 +41,28 @@ function updateDeviceStatus(deviceId) {
         .catch(error => console.log(error))
 }
 
+function getTempSensorData() {
+    fetch(`/getTempSensorData?deviceid=${tempHumiditySensorId}`)
+        .then((response) => response.json())
+        .then(function (sensorData) {
+            console.log(sensorData.humidity, sensorData.temperature)
+            displayFunctions.displaySensorData(sensorData.humidity, sensorData.temperature);
+        })
+        .catch();
+}
+
+// Event Listeners
+channelButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const channel = button.getAttribute('data-channel');
+        const newState = button.textContent === 'ON' ? 'off' : 'on';
+        console.log(button.getAttribute('data-channel'));
+        //displayChannelSwitch(button, newState);
+        setChannel(channel, newState);
+    });
+});
+
+getTempSensorData();
+setInterval(getTempSensorData, 5000);
 
 

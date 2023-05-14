@@ -18,13 +18,30 @@ export function displayDevices(devices) {
 }
 
 // temperature/humidity information
-export function displaySensorData(humidity,temperature) {
-    const converted_temperature = temperature / 100; // Деление на 100
-    const converted_humidity = humidity / 100; // Деление на 100
+export function displaySensorData(humidity, temperature) {
+    var temp_slot = document.getElementById('temperature');
+    var humid_slot = document.getElementById('humidity');
+    if (temp_slot != null && humid_slot != null) {
+        const converted_temperature = temperature / 100; // Деление на 100
+        const converted_humidity = humidity / 100; // Деление на 100
 
-    document.getElementById('temperature').textContent = `${converted_temperature.toFixed(2)}`; // Округление до 2 знаков после запятой
-    document.getElementById('humidity').textContent = `${converted_humidity.toFixed(2)}`; // Округление до 2 знаков после запятой
+        temp_slot.textContent = `${converted_temperature.toFixed(2)}`; // Округление до 2 знаков после запятой
+        humid_slot.textContent = `${converted_humidity.toFixed(2)}`; // Округление до 2 знаков после запятой
+    }
 }
+
+// light/motion information
+export function displayDbSensorData(dbSensorData) {
+    dbSensorData.forEach(element => {
+        if(element.sensor_name == "PIR Sensor"){
+            document.getElementById('motion').textContent = (element.sensor_data == 1 ? "Detected" : "Not Detected");
+        }else{
+            document.getElementById('light').textContent = (element.sensor_data == 1 ? "Detected" : "Not Detected");
+        }
+    })
+  
+}
+
 
 // change button color (Manual channels control)
 export function displayChannelSwitch(button, newState) {
@@ -54,7 +71,7 @@ export function setChannelBtnActive(state) {
     )
 }
 
-export function displayWeatherData(localtime, temp, icon){
+export function displayWeatherData(localtime, temp, icon) {
     const tempText = document.getElementsByClassName("temperature");
     const weatherIcon = document.getElementsByClassName("weatherIcon");
     const timeText = document.getElementsByClassName("timeRow");

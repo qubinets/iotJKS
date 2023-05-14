@@ -39,8 +39,8 @@
             <a href="index.html" class="btn btn-primary stretched-link"></a>
         </div>
 
-        <h1>Manual Control</h1>
-        <div class="cards" id="controlCards">
+        <div class="cards" id="controlCards" style="display:none">
+            <!--
             <div class="card shadow">
                 <div class="card-body ">
                     <h3 class="card-title">Channel 1</h3>
@@ -61,28 +61,39 @@
                 </div>
                 <a href="#" class="btn btn-primary stretched-link channelBtn" data-channel="3" id="channelButton3"></a>
             </div>
+            -->
 
             <div class="card shadow">
                 <div class="card-body">
-                    <h3 class="card-title">Channel 4</h3>
+                    <h3 class="card-title ">Enable Fan</h3>
                 </div>
                 <a href="#" class="btn btn-primary stretched-link channelBtn" data-channel="4" id="channelButton4"></a>
             </div>
+
+            <div class="card shadow">
+                <div class="card-body" style="height: 30%">
+                    <h3 class="card-title">Set lamp brightness</h3>
+                    <input type="range" min="1" max="100" style="width:100%" value="1" id="lampBrightnessSlider">
+                </div>
+            </div>
+
+
         </div>
 
+        <div class="cards" id="autoMode">
+            <h3>Automatic mode is enabled</h3>
+        </div>
 
-
-
+        <h2>Manual Control <label class="switch">
+            <input type="checkbox" id="socketSlider">
+            <span class="slider round"></span>
+        </label></h2>
     </div>
     </div>
-
-
-
-
 
 
     <!-- Scripts -->
-    <script type="module" src="js/vent_script.js"></script>
+    <script type="module" src="js/temp_reg_script.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>
 
