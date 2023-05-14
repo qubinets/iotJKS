@@ -4,11 +4,16 @@ const axios = require('axios');
 const app = express();
 const port = 3000;
 
-const login = 'dreamteam.iot@mail.com'
-const pass = 'edtr61iot'
-const region = 'eu'
+const login = 'dreamteam.iot@mail.com';
+const pass = 'edtr61iot';
+const region = 'eu';
+const WEATHER_API_KEY = "bf423b16349848f6ae085715231405";
+const WEATHER_LAT = '59.23';
+const WEATHER_LON = '27.16';
+
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
+
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -194,6 +199,11 @@ app.get('/setDevicePowerState', async (req, res) => {
         res.status(500).json({ error: 'Error fetching device data' });
     }
 });
+
+app.get('/getWeatherData', async (req, res) => {
+    const weatherdata = await fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${WEATHER_LAT},${WEATHER_LON}`);
+    res.json(weatherdata)
+})
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);

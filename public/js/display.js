@@ -53,3 +53,15 @@ export function setChannelBtnActive(state) {
     }
     )
 }
+
+export function displayWeatherData(localtime, temp, icon){
+    const tempText = document.getElementsByClassName("temperature");
+    const weatherIcon = document.getElementsByClassName("weatherIcon");
+    const timeText = document.getElementsByClassName("timeRow");
+    const dateText = document.getElementsByClassName("dateRow");
+
+    tempText[0].innerText = temp;
+    timeText[0].innerText = localtime.substring(10);
+    dateText[0].innerText = localtime.substring(0, 10);
+    weatherIcon[0].src = icon;
+}
