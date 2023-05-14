@@ -27,53 +27,64 @@
 
 <body>
     <div class="container">
-
-        <!-- Temperature section-->
-        <div class="temp">
-            <h3 class="tempRow">
-                <img class="weatherIcon"></img><span class="temperature">Loading..</span>&nbsp;°C
-            </h3>
-            <h3 class="timeRow">Loading..</h3>
-            <h3 class="dateRow">Loading..</h3>
-        </div>
-        <!-- Temperature section end-->
-
-        <!-- Main Buttons -->
         <div class="cards">
             <div class="card shadow">
-                <div class="card-body ">
-                    <h3 class="card-title">Ventilation</h3>
-                </div>
-
-                <a href="ventilation.html" class="btn btn-primary stretched-link">Go somewhere</a>
-            </div>
-
-            <div class="card shadow">
                 <div class="card-body">
-                    <h3 class="card-title">Outdoor light</h3>
+                    <h1 class="card-title">Home</h1>
                 </div>
-                <a href="outdoor.html" class="btn btn-primary stretched-link">Go somewhere</a>
+                <a href="index.html" class="btn btn-primary stretched-link">Go somewhere</a>
             </div>
 
-            <div class="card shadow">
-                <div class="card-body">
-                    <h3 class="card-title">Indoor light</h3>
-                </div>
-                <a href="indoor.html" class="btn btn-primary stretched-link">Go somewhere</a>
+            <div class="card card-control shadow">
+                <h3>Led brightness control</h3>
+                <input type="range" id="ledBrightnessSlider" min="0" max="100">
             </div>
 
-            <div class="card shadow">
-                <div class="card-body">
-                    <h3 class="card-title">Sensor data</h3>
+            <div class="card card-control shadow">
+                <div class="range">
+                    <h3>Led speed control</h3>
+                    <input type="range" id="ledSpeedSlider" style="width: 100%" min="0" max="40">
                 </div>
-                <a href="sensors.html" class="btn btn-primary stretched-link">Go somewhere</a>
             </div>
+
+            <div class="card card-control shadow">
+                <div class="range">
+                    <h3>Color picker</h3>
+                    <input type="color" id="colorPicker" value="#FF0000">
+                </div>
+            </div>
+
+            <div class="card card-control shadow">
+                <h3>Mode picker</h3>
+                <select id="ledSchemeSelect" class="form-select">
+                    <option value="0">Mode 1</option>
+                    <option value="1">Mode 2</option>
+                    <option value="2">Mode 3</option>
+                    <option value="3">Mode 4</option>
+                    <option value="4">Mode 5</option>
+                </select>
+            </div>
+
+            <div class="card card-control shadow">
+                <div class="range">
+                    <h3>Socket control</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="socketSlider">
+                        <span class="slider round" ></span>
+                    </label>
+
+                </div>
+
+            </div>
+
         </div>
-        <!-- Main Buttons End-->
     </div>
 
+
+
+
     <!-- Scripts -->
-    <script type="module" src="js/index_script.js"></script>
+    <script type="module" src="js/indoor_script.js"></script>
 </body>
 
 </html>

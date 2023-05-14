@@ -18,6 +18,15 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const { Client } = require('pg')
+const client = new Client({
+    host: 'localhost',
+    port: 5432,
+    database: 'sensors_data',
+    user: 'raspberry',
+    password: 'raspberry',
+})
+client.connect()
 
 app.get('/getWeatherData', async (req, res) => {
     const weatherdata = await fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${WEATHER_LAT},${WEATHER_LON}`);
