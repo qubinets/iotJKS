@@ -1,12 +1,7 @@
 import * as displayFunctions from './display.js';
 
-const switchId = '10017b7136'; // Замените на ID вашего устройства
-
-
 // HTML
 const getDevicesButton = document.getElementById("getDevicesButton");
-
-
 
 // API requests
 function getDevices() {
@@ -30,17 +25,6 @@ function updateDeviceStatus(deviceId) {
         })
         .catch(error => console.log(error))
 }
-
-
-
-
-
-
-
-
-
-
-// lamp brightness slider
 
 
 

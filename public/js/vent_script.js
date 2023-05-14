@@ -1,6 +1,7 @@
 import * as displayFunctions from './display.js';
 
-const channelButtons = document.querySelectorAll('#channelButtons button');
+const channelButtons = document.querySelectorAll(".channelBtn");
+const switchId = '10017b7136'; // Замените на ID вашего устройства
 
 function setChannel(channel, state) {
     displayFunctions.setChannelBtnActive(false);
@@ -12,13 +13,13 @@ function setChannel(channel, state) {
         });
 }
 
-
 channelButtons.forEach(button => {
     button.addEventListener('click', () => {
         const channel = button.getAttribute('data-channel');
         const newState = button.textContent === 'ON' ? 'off' : 'on';
-        displayChannelSwitch(button, newState);
-        setChannel(channel, newState, button);
+        console.log(button.getAttribute('data-channel'));
+        //displayChannelSwitch(button, newState);
+        setChannel(channel, newState);
     });
 });
 
