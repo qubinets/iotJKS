@@ -40,7 +40,37 @@ function getDoorSensorData() {
 getDevicesButton.addEventListener('click', function () {
     getDevices();
 });
+
 */
+// function checkDoorStatus() {
+//     if (isDoorOpen === "on") {
+//         // Выполните необходимые действия, когда дверь открыта
+//         fetch(`/setChannel?deviceid=${switchId}&channel=1&state=off`)
+//             .then((response) => {
+//                 if (response.ok) {
+//                     console.log("Дверь была открыта.");
+//                 } else {
+//                     console.error("Произошла ошибка при выполнении действия.");
+//                 }
+//             })
+//             .catch((error) => {
+//                 console.error("Произошла ошибка при выполнении запроса:", error);
+//             });
+//     } else {
+//         fetch(`/setChannel?deviceid=${switchId}&channel=1&state=on`)
+//         .then((response) => {
+//             if (response.ok) {
+//                 console.log("Дверь была закрыта.");
+//             } else {
+//                 console.error("Произошла ошибка при выполнении действия.");
+//             }
+//         })
+//         .catch((error) => {
+//             console.error("Произошла ошибка при выполнении запроса:", error);
+//         });
+//     }
+// }
+
 
 getTempSensorData();
 getDoorSensorData();

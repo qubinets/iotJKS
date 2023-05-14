@@ -217,6 +217,15 @@ app.get('/setDevicePowerState', async (req, res) => {
     }
 });
 
+app.get('/getSensorsDataFromDb', async (req, res) => {
+        client.query('select distinct on (sensor_name) * FROM sensors_data ORDER BY sensor_name, timestamp DESC', (error, results) => {
+            if (error) {
+                throw error
+            }
+            res.status(200).json(results.rows)
+        })
+})
+
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });

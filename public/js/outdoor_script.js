@@ -1,7 +1,6 @@
 import * as displayFunctions from './display.js';
 const lampId = '100123e422';
-const tempHumiditySensorId = 'a480056d1b'; // Замените на ID вашего датчика температуры/влажности
-const doorSensorId = '100187b85f';
+
 const sliderLampBrightness = document.getElementById("lampBrightnessSlider");
 
 function getDeviceParameters() {
