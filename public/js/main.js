@@ -167,10 +167,9 @@ function setLedSpeed(speed) {
 }
 
 function getWeatherData() {
-    fetch('/getWeatherData').then((result) => result.json()
-    ).then((json) => {
-        displayFunctions.displayWeatherData(json.location.localtime, json.current.temp_c, json.current.condition.icon);
-    })
+    fetch('/getWeatherData')
+    .then((result) => result.json())
+    .then((json) => displayFunctions.displayWeatherData(json.location.localtime, json.current.temp_c, json.current.condition.icon))
 }
 
 /*

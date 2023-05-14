@@ -18,6 +18,14 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+app.get('/getWeatherData', async (req, res) => {
+    const weatherdata = await fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${WEATHER_LAT},${WEATHER_LON}`);
+    const weatherJSON = await weatherdata.json();
+    res.json(weatherJSON)
+});
+
+
 app.get('/getDevice', async (req, res) => {
     try {
         const deviceId = req.query.deviceid;
@@ -199,11 +207,6 @@ app.get('/setDevicePowerState', async (req, res) => {
         res.status(500).json({ error: 'Error fetching device data' });
     }
 });
-
-app.get('/getWeatherData', async (req, res) => {
-    const weatherdata = await fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${WEATHER_LAT},${WEATHER_LON}`);
-    res.json(weatherdata)
-})
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
