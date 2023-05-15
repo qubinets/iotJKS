@@ -26,7 +26,8 @@ const client = new Client({
     user: 'raspberry',
     password: 'raspberry',
 })
-client.connect()
+client.connect();
+
 
 app.get('/getWeatherData', async (req, res) => {
     const weatherdata = await fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${WEATHER_LAT},${WEATHER_LON}`);
@@ -47,6 +48,7 @@ app.get('/getDevice', async (req, res) => {
 
         const device = await connection.getDevice(deviceId);
         if (device) {
+            console.log("/getDevice query");
             res.json(device.params);
         } else {
             res.status(500).json({ error: 'Failed to fetch device data' });
@@ -66,7 +68,7 @@ app.get('/getDevices', async (req, res) => {
         });
 
         const devices = await connection.getDevices();
-        console.log(devices);
+        console.log("/getDevices query")
         res.json(devices);
     } catch (error) {
         console.error('Error fetching devices:', error);
@@ -88,12 +90,12 @@ app.get('/setChannel', async (req, res) => {
     try {
         // Получить текущий статус 
         const device = await connection.getDevice(deviceId);
-
-        if (device && device.params.switches) {
+        if (device && device.params.switches != null) {
             var currentChannelState = device.params.switches[channel - 1].switch;
             // Проверить, необходимо ли переключать состояние
             if (state !== currentChannelState) {
                 const result = await connection.toggleDevice(deviceId, channel);
+                console.log("/setChannel query");
                 res.json(result);
             } else {
                 res.json({ status: 'ok', state: currentChannelState });
@@ -111,13 +113,15 @@ app.get('/getTempSensorData', async (req, res) => {
         email: login,
         password: pass,
         region: region,
-    });
+    })
+    const auth = await connection.getCredentials();
+    console.log(auth)
 
     try {
         const deviceId = req.query.deviceid;
         const sensorData = await connection.getDevice(deviceId);
+        console.log("/getTempSensorData query");
         res.json(sensorData.params);
-        console.log(sensorData);
     } catch (error) {
         console.error('Error fetching sensor data:', error);
         res.status(500).json({ error: 'Error fetching sensor data' });
@@ -158,7 +162,7 @@ app.post('/setBrightness', async (req, res) => {
             throw new Error('Device did not respond with status 200');
         }
 
-        console.log('Request sent:', data);
+        console.log('/setBrightness Request sent:', data);
         res.json({ success: true, message: 'Brightness updated successfully' });
     } catch (error) {
         console.error('Error updating brightness:', error);
@@ -171,6 +175,7 @@ app.post('/setSwitchState', async (req, res) => {
     const newState = req.body.state;
     const result = await connection.setDevicePowerState(deviceId, newState);
     if (result && result.error === 0) {
+        console.log("/setSwitchState query");
         res.json({ success: true });
     } else {
         res.status(500).json({ error: 'Failed to set switch state' });
@@ -187,8 +192,8 @@ app.get('/getDoorSensorData', async (req, res) => {
     try {
         const deviceId = req.query.deviceid;
         const sensorData = await connection.getDevice(deviceId);
+        console.log("/getDoorSensorData query");
         res.json(sensorData.params);
-        console.log(sensorData);
     } catch (error) {
         console.error('Error fetching sensor data:', error);
         res.status(500).json({ error: 'Error fetching sensor data' });
@@ -207,6 +212,7 @@ app.get('/setDevicePowerState', async (req, res) => {
 
         const device = await connection.setDevicePowerState(deviceId);
         if (device) {
+            console.log("/setDevicePowerState query")
             res.json(device.params);
         } else {
             res.status(500).json({ error: 'Failed to fetch device data' });
@@ -222,6 +228,7 @@ app.get('/getSensorsDataFromDb', async (req, res) => {
             if (error) {
                 throw error
             }
+            console.log("/getSensorDataFromDb query")
             res.status(200).json(results.rows)
         })
 })
