@@ -114,8 +114,7 @@ app.get('/getTempSensorData', async (req, res) => {
         password: pass,
         region: region,
     })
-    const auth = await connection.getCredentials();
-    console.log(auth)
+    //const auth = await connection.getCredentials();
 
     try {
         const deviceId = req.query.deviceid;
