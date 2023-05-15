@@ -281,7 +281,7 @@ input#colorPicker{
 .button:active .bar {
   background: lightgreen;
 }
-  
+
 .button:active::before {
   border-color: lightgreen;
 }
