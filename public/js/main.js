@@ -47,7 +47,7 @@ function getTempSensorData() {
             console.log(sensorData.humidity, sensorData.temperature)
             displayFunctions.displaySensorData(sensorData.humidity, sensorData.temperature);
         })
-        .catch();
+        .catch(error => console.log(error));
 }
 
 // Event Listeners
