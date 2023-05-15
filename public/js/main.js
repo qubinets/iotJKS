@@ -7,7 +7,6 @@ const switchId = '10017b7136'; // Замените на ID вашего устр
 const getDevicesButton = document.getElementById("getDevicesButton");
 const channelButtons = document.querySelectorAll(".channelBtn");
 
-
 function setChannel(channel, state) {
     displayFunctions.setChannelBtnActive(false);
     fetch(`/setChannel?deviceid=${switchId}&channel=${channel}&state=${state}`)

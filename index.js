@@ -26,7 +26,7 @@ const client = new Client({
     user: 'raspberry',
     password: 'raspberry',
 })
-client.connect()
+// client.connect()
 
 app.get('/getWeatherData', async (req, res) => {
     const weatherdata = await fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${WEATHER_LAT},${WEATHER_LON}`);
@@ -198,6 +198,7 @@ app.get('/getDoorSensorData', async (req, res) => {
 app.get('/setDevicePowerState', async (req, res) => {
     try {
         const deviceId = req.query.deviceid;
+        const state = req.query.state; // Добавьте это
 
         const connection = new ewelink({
             email: login,
@@ -205,15 +206,15 @@ app.get('/setDevicePowerState', async (req, res) => {
             region: region,
         });
 
-        const device = await connection.setDevicePowerState(deviceId);
-        if (device) {
-            res.json(device.params);
+        const result = await connection.setDevicePowerState(deviceId, state); // Измените это
+        if (result) {
+            res.json(result);
         } else {
-            res.status(500).json({ error: 'Failed to fetch device data' });
+            res.status(500).json({ error: 'Failed to change device state' }); // Измените сообщение об ошибке
         }
     } catch (error) {
-        console.error('Error fetching device data:', error);
-        res.status(500).json({ error: 'Error fetching device data' });
+        console.error('Error changing device state:', error); // Измените сообщение об ошибке
+        res.status(500).json({ error: 'Error changing device state' }); // Измените сообщение об ошибке
     }
 });
 

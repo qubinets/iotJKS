@@ -27,16 +27,34 @@
 
 <body>
     <div class="container">
+        <div style="width: 100%;display: flex;">
+            <!-- Temperature section-->
+            <div class="temp">
+                <h3 class="tempRow">
+                    <img class="weatherIcon"></img><span class="temperature">Loading..</span>&nbsp;°C
+                </h3>
+                <h3 class="timeRow">Loading..</h3>
+                <h3 class="dateRow">Loading..</h3>
+            </div>
+            <!-- Temperature section end-->
+            <!-- Socket toggle -->
+            <div id = "socketControl">
 
-        <!-- Temperature section-->
-        <div class="temp">
-            <h3 class="tempRow">
-                <img class="weatherIcon"></img><span class="temperature">Loading..</span>&nbsp;°C
-            </h3>
-            <h3 class="timeRow">Loading..</h3>
-            <h3 class="dateRow">Loading..</h3>
+                <div class="button" id = "socketStateBtn">
+                    <div class="bar">
+                    </div>
+                </div>
+                <!-- <button class = "socketBtn" id="socketStateBtn"></button> -->
+                
+                <!-- <div class="range">
+                    <h3>Socket control</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="socketSlider">
+                        <span class="slider round"></span>
+                    </label>
+                </div> -->
+            </div>
         </div>
-        <!-- Temperature section end-->
 
         <!-- Main Buttons -->
         <div class="cards">

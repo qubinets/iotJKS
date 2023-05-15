@@ -36,7 +36,7 @@ h1{
 }
 
 .temp {
-    width: 100%;
+    width: 50%;
     display: block;
     padding: 1%;
     height: 40%;
@@ -199,3 +199,75 @@ input#colorPicker{
   .slider.round:before {
     border-radius: 50%;
   }
+
+  #socketControl {
+    width:50%;
+    justify-content: center;
+    align-items: center;
+    display:flex;
+  }
+
+  .socketBtn {
+    height: 50%;
+    width: 50%;
+    background-image: url('button.png');
+    background-size:contain;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background-color: transparent;
+  }
+
+  .button {
+    /* 	design the outer circle */
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 5px 0px #888;
+    position: relative;
+    display: grid;
+    place-items: center;
+}
+
+.button::before {
+  /* pseudo-elements don't appear unless content property is declared */
+  content: "";
+
+  /* design the element */
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  border: 7px solid #eee;
+  position: absolute;
+}
+
+.bar {
+  height: 20%;
+  width: 2px;
+  background: #eee;
+  border-radius: 5px; /* for rounded ends */
+  position: absolute; 
+    top: 30px;
+    box-shadow: 0 0 0 4px white;
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+.button:active {
+  box-shadow: 0 0 10px 0px #888 inset;
+}
+
+.button:active .bar {
+  background: lightgreen;
+}
+
+.button.clicked:hover {
+  background: lightgreen;
+}
+
+.button:active::before {
+  border-color: lightgreen;
+}
