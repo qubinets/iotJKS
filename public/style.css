@@ -202,7 +202,6 @@ input#colorPicker{
 
   #socketControl {
     width:50%;
-    border: 3px solid red;
     justify-content: center;
     align-items: center;
     display:flex;
@@ -264,7 +263,7 @@ input#colorPicker{
 .button:active .bar {
   background: lightgreen;
 }
-  
+
 .button:active::before {
   border-color: lightgreen;
 }

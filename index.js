@@ -171,17 +171,17 @@ app.post('/setBrightness', async (req, res) => {
     }
 });
 
-app.post('/setSwitchState', async (req, res) => {
-    const deviceId = req.body.deviceid;
-    const newState = req.body.state;
-    const result = await connection.setDevicePowerState(deviceId, newState);
-    if (result && result.error === 0) {
-        console.log("/setSwitchState query");
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ error: 'Failed to set switch state' });
-    }
-});
+// app.post('/setSwitchState', async (req, res) => {
+//     const deviceId = req.body.deviceid;
+//     const newState = req.body.state;
+//     const result = await connection.setDevicePowerState(deviceId, newState);
+//     if (result && result.error === 0) {
+//         console.log("/setSwitchState query");
+//         res.json({ success: true });
+//     } else {
+//         res.status(500).json({ error: 'Failed to set switch state' });
+//     }
+// });
 
 app.get('/getDoorSensorData', async (req, res) => {
     const connection = new ewelink({
@@ -204,6 +204,7 @@ app.get('/getDoorSensorData', async (req, res) => {
 app.get('/setDevicePowerState', async (req, res) => {
     try {
         const deviceId = req.query.deviceid;
+        const state = req.query.state; // Добавьте это
 
         const connection = new ewelink({
             email: login,
@@ -211,7 +212,7 @@ app.get('/setDevicePowerState', async (req, res) => {
             region: region,
         });
 
-        const device = await connection.setDevicePowerState(deviceId);
+        const device = await connection.setDevicePowerState(deviceId, state);
         if (device) {
             console.log("/setDevicePowerState query")
             res.json(device.params);
