@@ -137,6 +137,24 @@ input#colorPicker{
     width: 100%;
 }
 
+.autoHeader{
+  width: 100%;
+}
+.block{
+  width: 33%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-items: center;
+}
+
+.gaugeDiv{
+  width: 100%;
+  margin-top: 10%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-items: center;
+}
+
 /* The switch - the box around the slider */
 .switch {
     position: relative;
@@ -202,7 +220,6 @@ input#colorPicker{
 
   #socketControl {
     width:50%;
-    border: 3px solid red;
     justify-content: center;
     align-items: center;
     display:flex;
@@ -268,3 +285,4 @@ input#colorPicker{
 .button:active::before {
   border-color: lightgreen;
 }
+
