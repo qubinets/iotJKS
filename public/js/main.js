@@ -1,24 +1,65 @@
 import * as displayFunctions from './display.js';
 
-const tempHumiditySensorId = 'a480056d1b'; // Замените на ID вашего датчика температуры/влажности
-const switchId = '10017b7136'; // Замените на ID вашего устройства
+const tempHumiditySensorId = 'a480056d1b';
+const switchId = '10017b7136';
+var switchStates = [false, false, false, false];
 
 // HTML
-const getDevicesButton = document.getElementById("getDevicesButton");
 const channelButtons = document.querySelectorAll(".channelBtn");
 
-
+// Set switch channel API call
 function setChannel(channel, state) {
-    displayFunctions.setChannelBtnActive(false);
-    fetch(`/setChannel?deviceid=${switchId}&channel=${channel}&state=${state}`)
-        .then(response => response.json)
-        .catch(error => console.log(error))
+    axios.get(`/setChannel?deviceid=${switchId}&channel=${channel}&state=${state}`, {timeout: 9000})
+        .then(response => {
+            console.log(response);
+            if (response.data && response.data.error) {
+                throw new Error(response.data.msg || 'Server error');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            setChannel(channel, state);
+        })
         .finally(() => {
-            displayFunctions.setChannelBtnActive(true);
+
         });
 }
 
-// API requests
+// Call temperature/humidity sensor API and get data
+function getTempSensorData() {
+    fetch(`/getTempSensorData?deviceid=${tempHumiditySensorId}`)
+        .then((response) => {
+            response.json()
+        })
+        .then(function (sensorData) {
+            console.log(sensorData.humidity, sensorData.temperature)
+            displayFunctions.displaySensorData(sensorData.humidity, sensorData.temperature);
+        })
+        .catch(error => console.log(error));
+}
+
+// Event Listeners
+
+// Monitor switch channel buttons
+channelButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const channel = button.getAttribute('data-channel');
+        const newState = !switchStates[channel - 1];
+        switchStates[channel-1] = newState;
+        console.log(switchStates, button.getAttribute('data-channel'), newState);
+        //displayChannelSwitch(button, newState);
+
+        setChannel(channel, newState);
+    });
+});
+
+
+// Call functions periodically
+getTempSensorData();
+setInterval(getTempSensorData, 10000);
+
+
+/*// API requests
 function getDevices() {
     getDevicesButton.disabled = true;
     fetch('/getDevices')
@@ -32,6 +73,7 @@ function getDevices() {
         .finally(() => getDevicesButton.disabled = false);
 }
 
+// Not Used
 function updateDeviceStatus(deviceId) {
     fetch(`/getDevice?deviceid=${deviceId}`)
         .then(response => response.json())
@@ -40,29 +82,5 @@ function updateDeviceStatus(deviceId) {
         })
         .catch(error => console.log(error))
 }
-
-function getTempSensorData() {
-    fetch(`/getTempSensorData?deviceid=${tempHumiditySensorId}`)
-        .then((response) => response.json())
-        .then(function (sensorData) {
-            console.log(sensorData.humidity, sensorData.temperature)
-            displayFunctions.displaySensorData(sensorData.humidity, sensorData.temperature);
-        })
-        .catch(error => console.log(error));
-}
-
-// Event Listeners
-channelButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const channel = button.getAttribute('data-channel');
-        const newState = button.textContent === 'ON' ? 'off' : 'on';
-        console.log(button.getAttribute('data-channel'));
-        //displayChannelSwitch(button, newState);
-        setChannel(channel, newState);
-    });
-});
-
-getTempSensorData();
-setInterval(getTempSensorData, 5000);
-
+*/
 

@@ -90,8 +90,11 @@ app.get('/setChannel', async (req, res) => {
     try {
         // Получить текущий статус 
         const device = await connection.getDevice(deviceId);
-        if (device && device.params.switches != null) {
+        //console.log(device);
+        if (device.error == null) {
+            console.log(device.params.switches[channel-1]);
             var currentChannelState = device.params.switches[channel - 1].switch;
+
             // Проверить, необходимо ли переключать состояние
             if (state !== currentChannelState) {
                 const result = await connection.toggleDevice(deviceId, channel);
