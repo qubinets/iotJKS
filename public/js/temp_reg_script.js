@@ -42,8 +42,8 @@ sliderAuto.oninput = function () {
     else{
         console.log("Fan - off, Heating - on")
         setChannel(1, false);
-        setTimeout(setChannel(3, true), 3000);
-        setTimeout(setBrightness(100), 3000); 
+        setTimeout(setChannel(3, true), 100);
+        setTimeout(setBrightness(100), 100); 
     }
 }
 
@@ -58,6 +58,7 @@ function setChannel(channel, state) {
         })
         .catch(error => {
             console.error(error);
+            setTimeout( setChannel(channel, state), 1000);
         })
 }
 
@@ -98,6 +99,7 @@ async function setBrightness(newBrightness) {
         const jsonResponse = await response.json();
 
         if (!jsonResponse.success) {
+            setTimeout( setBrightness(newBrightness), 1000);
             throw new Error('Failed to update brightness');
         }
 

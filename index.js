@@ -80,30 +80,41 @@ app.get('/getDevices', async (req, res) => {
 
 app.get('/setChannel', async (req, res) => {
     const deviceId = req.query.deviceid;
-    const channel = parseInt(req.query.channel);
     const state = req.query.state;
+    const channel = parseInt(req.query.channel);
 
-    const keyCon = new ewelink({
+    var keyCon = new ewelink({
         at: auth.at,
         apiKey: auth.apiKey,
         region: auth.region,
     });
 
     try {
+        console.log(`/setChannel query, Channel: ${channel - 1}`);
         // Получить текущий статус 
-        const device = await keyCon.getDevice(deviceId);
-        if (device.error == null) {
-            console.log(device.params.switches[channel - 1]);
-            var currentChannelState = device.params.switches[channel - 1].switch;
+        var device = await keyCon.getDevice(deviceId);
+        console.log(device)
 
-            // Проверить, необходимо ли переключать состояние
-            if (state !== currentChannelState) {
-                const result = await keyCon.toggleDevice(deviceId, channel);
-                console.log("/setChannel query");
-                res.json(result);
-            } else {
-                res.json({ status: 'ok', state: currentChannelState });
-            }
+        // Login again if auth error
+        if (device.error != null && device.error == 406) {
+            console.log("Auth error, logging in again...")
+            auth = await connection.getCredentials();
+            keyCon = new ewelink({
+                at: auth.at,
+                apiKey: auth.apiKey,
+                region: auth.region,
+            });
+            device = await keyCon.getDevice(deviceId);
+        }
+
+        // Проверить, необходимо ли переключать состояние
+        var currentChannelState = device.params.switches[channel - 1].switch;
+        
+        if (state !== currentChannelState) {
+            const result = await keyCon.toggleDevice(deviceId, channel);
+            res.json(result);
+        } else {
+            res.status(304).json({ status: 'ok', state: currentChannelState });
         }
 
     } catch (error) {
@@ -124,7 +135,7 @@ app.get('/getTempSensorData', async (req, res) => {
 
         const deviceId = req.query.deviceid;
         const sensorData = await keyCon.getDevice(deviceId);
-        console.log(`/getTempSensorData query ${Date.now()}`);
+        //console.log(`/getTempSensorData query ${Date.now()}`);
         res.send(sensorData.params);
     } catch (error) {
         console.error('Error fetching sensor data:', error);
