@@ -113,17 +113,20 @@ app.get('/setChannel', async (req, res) => {
 });
 
 app.get('/getTempSensorData', async (req, res) => {
-    const keyCon = new ewelink({
-        at: auth.at,
-        apiKey: auth.apiKey,
-        region: auth.region,
-    });
-
     try {
+        auth = await connection.getCredentials();
+        
+        const keyCon = new ewelink({
+            at: auth.at,
+            apiKey: auth.apiKey,
+            region: auth.region,
+        });
+
         const deviceId = req.query.deviceid;
         const sensorData = await keyCon.getDevice(deviceId);
+        console.log(sensorData);
         console.log(`/getTempSensorData query ${Date.now()}`);
-        res.json(sensorData.params);
+        res.send(sensorData.params);
     } catch (error) {
         console.error('Error fetching sensor data:', error);
         res.status(500).json({ error: 'Error fetching sensor data' });

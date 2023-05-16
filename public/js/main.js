@@ -24,18 +24,18 @@ function setChannel(channel, state) {
 // Call temperature/humidity sensor API and get data
 async function getTempSensorData() {
     try {
-        let fetchResult = await fetch(`/getTempSensorData?deviceid=${tempHumiditySensorId}`)
-        let response = await fetchResult.json();
+        let fetchResult = await axios.get(`/getTempSensorData?deviceid=${tempHumiditySensorId}`)
+        console.log(fetchResult)
+        /*
         if (response && response.humidity && response.temperature) {
             console.log(response.humidity, response.temperature);
             localStorage.setItem('humidity', response.humidity / 100);
             localStorage.setItem('temperature', response.temperature / 100);
             displayFunctions.displaySensorData(response.humidity, response.temperature);
         }
+        */
     } catch(error){
         console.log(error)
-        setTimeout(getTempSensorData(), 1500); 
-        
     };
 }
 
@@ -57,31 +57,5 @@ channelButtons.forEach(button => {
 
 // Call functions periodically
 getTempSensorData();
-setInterval(getTempSensorData, 15000);
-
-
-/*// API requests
-function getDevices() {
-    getDevicesButton.disabled = true;
-    fetch('/getDevices')
-        .then((response) => response.json())
-        .then((devices) => {
-            displayFunctions.displayDevices(devices);
-        })
-        .catch(function () {
-            console.error();
-        })
-        .finally(() => getDevicesButton.disabled = false);
-}
-
-// Not Used
-function updateDeviceStatus(deviceId) {
-    fetch(`/getDevice?deviceid=${deviceId}`)
-        .then(response => response.json())
-        .then(function (device) {
-            displayFunctions.displayStatusIndicator(device)
-        })
-        .catch(error => console.log(error))
-}
-*/
+setInterval(getTempSensorData, 10000);
 
