@@ -13,6 +13,10 @@ socketStateBtn.addEventListener('click', function () {
     setSwitchStateSocket();
 });
 
+socketStateBtn.addEventListener("click", function() {
+    this.classList.toggle("active");
+  });
+
 function getWeatherData() {
     fetch('/getWeatherData')
     .then((result) => result.json())
