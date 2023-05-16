@@ -1,13 +1,8 @@
 import * as displayFunctions from './display.js';
 
 const tempHumiditySensorId = 'a480056d1b';
-const switchId = '10017b7136';
-var switchStates = [false, false, false, false];
-
 // HTML
 const channelButtons = document.querySelectorAll(".channelBtn");
-
-
 
 // Call temperature/humidity sensor API and get data
 async function getTempSensorData() {
@@ -28,7 +23,7 @@ async function getTempSensorData() {
 
 // Set switch channel API call
 function setChannel(channel, state) {
-    axios.get(`/setChannel?deviceid=${switchId}&state=${state}&channel=${channel}`, { timeout: 10000 })
+    axios.get(`/setChannel?channel=${channel}&state=${state}`, { timeout: 10000 })
         .then(response => {
             console.log(response);
             if (response.data && response.data.error) {
@@ -46,10 +41,8 @@ function setChannel(channel, state) {
 channelButtons.forEach(button => {
     button.addEventListener('click', () => {
         const channel = button.getAttribute('data-channel');
-        const newState = !switchStates[channel - 1];
-        switchStates[channel - 1] = newState;
-        console.log(switchStates, button.getAttribute('data-channel'), newState);
-        setChannel(channel, newState);
+        console.log(button.getAttribute('data-channel'));
+        setChannel(channel, "TOGGLE");
     });
 });
 

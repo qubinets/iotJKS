@@ -79,48 +79,26 @@ app.get('/getDevices', async (req, res) => {
 });
 
 app.get('/setChannel', async (req, res) => {
-    const deviceId = req.query.deviceid;
     const state = req.query.state;
     const channel = parseInt(req.query.channel);
 
-    var keyCon = new ewelink({
-        at: auth.at,
-        apiKey: auth.apiKey,
-        region: auth.region,
-    });
+    // Запрос на ваше устройство
+    const apiUrl = `http://192.168.1.5/cm?cmnd=POWER${channel}%20${state}}`;
+    console.log(apiUrl);
+    // Send the HTTP request to toggle the relay
+    axios({
+        url: apiUrl,
+    })
+        .then(response => {
+            console.log('Request sent successfully.');
+            console.log('Response:', response.data);
+            res.send('Toggle request sent successfully');
+        })
+        .catch(error => {
+            console.error('Error sending request:', error);
+            res.status(500).send('Error sending toggle request');
+        });
 
-    try {
-        console.log(`/setChannel query, Channel: ${channel - 1}`);
-        // Получить текущий статус 
-        var device = await keyCon.getDevice(deviceId);
-        console.log(device)
-
-        // Login again if auth error
-        if (device.error != null && device.error == 406) {
-            console.log("Auth error, logging in again...")
-            auth = await connection.getCredentials();
-            keyCon = new ewelink({
-                at: auth.at,
-                apiKey: auth.apiKey,
-                region: auth.region,
-            });
-            device = await keyCon.getDevice(deviceId);
-        }
-
-        // Проверить, необходимо ли переключать состояние
-        var currentChannelState = device.params.switches[channel - 1].switch;
-        
-        if (state !== currentChannelState) {
-            const result = await keyCon.toggleDevice(deviceId, channel);
-            res.json(result);
-        } else {
-            res.status(304).json({ status: 'ok', state: currentChannelState });
-        }
-
-    } catch (error) {
-        console.error('Error setting channel state:', error);
-        res.status(500).json({ error: 'Error setting channel state' });
-    }
 });
 
 app.get('/getTempSensorData', async (req, res) => {
