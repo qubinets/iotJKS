@@ -83,7 +83,7 @@ app.get('/setChannel', async (req, res) => {
     const channel = parseInt(req.query.channel);
 
     // Запрос на ваше устройство
-    const apiUrl = `http://192.168.1.5/cm?cmnd=POWER${channel}%20${state}}`;
+    const apiUrl = `http://192.168.1.5/cm?cmnd=Power${channel}%20${state}`;
     console.log(apiUrl);
     // Send the HTTP request to toggle the relay
     axios({

@@ -22,17 +22,8 @@ async function getTempSensorData() {
 }
 
 // Set switch channel API call
-function setChannel(channel, state) {
-    axios.get(`/setChannel?channel=${channel}&state=${state}`, { timeout: 10000 })
-        .then(response => {
-            console.log(response);
-            if (response.data && response.data.error) {
-                throw new Error(response.data.msg || 'Server error');
-            }
-        })
-        .catch(error => {
-            console.error(error);
-        })
+async function setChannel(channel, state) {
+    await fetch(`/setChannel?channel=${channel}&state=${state}`)
 }
 
 // Event Listeners

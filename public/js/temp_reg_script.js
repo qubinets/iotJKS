@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", (loaded) => {
     sliderLampBrightness.value = saved_brightness || sliderLampBrightness.getAttribute('min');
 })
 
-sliderAuto.onchange = function () {
+sliderAuto.onchange = async function () {
     localStorage.setItem('autoValue', this.value);
     output.innerHTML = this.value;
 
@@ -34,30 +34,21 @@ sliderAuto.onchange = function () {
     // If needs to be colder
     if (temperature_diff > 0) {
         console.log("Fan - on, Heating - off")
-        setChannel(1, "ON");
-        setChannel(3, "OFF")
+        await setChannel(1, "ON");
+        await setChannel(3, "OFF")
     } 
     // If needs to be warmer
     else{
         console.log("Fan - off, Heating - on")
-        setChannel(1, "OFF");
-        setChannel(3, "ON");
-        setTimeout(setBrightness(100), 5000);
+        await setChannel(1, "OFF");
+        await setChannel(3, "ON");
+        await setTimeout(setBrightness(100), 5000);
     }
 }
 
 // Set switch channel API call
-function setChannel(channel, state) {
-    axios.get(`/setChannel?channel=${channel}&state=${state}`, { timeout: 10000 })
-        .then(response => {
-            console.log(response);
-            if (response.data && response.data.error) {
-                throw new Error(response.data.msg || 'Server error');
-            }
-        })
-        .catch(error => {
-            console.error(error);
-        })
+async function setChannel(channel, state) {
+    await fetch(`/setChannel?channel=${channel}&state=${state}`);
 }
 
 
