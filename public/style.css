@@ -333,7 +333,6 @@ input#colorPicker{
 
 .button.active::before,
 .button:active::before {
-<<<<<<< HEAD
   border-color: lightgreen; /* изменяем фоновый цвет */
 }
 
@@ -375,8 +374,3 @@ input#colorPicker{
   border: 1px solid black;
   cursor: pointer;
 }
-=======
-  border-color: lightgreen;
-}
-
->>>>>>> 298b561277a233f58630c388a8c32f4d33c3bae2
