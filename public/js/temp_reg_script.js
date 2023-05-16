@@ -2,11 +2,18 @@ import * as displayFunctions from './display.js';
 const lampId = '10016705ce';
 
 const sliderLampBrightness = document.getElementById("lampBrightnessSlider");
+const sliderAuto = document.getElementById("myRange")
 
 var output = document.getElementById('value-holder');
 var output_manual = document.getElementById('value-holder-manual');
-var slider = document.getElementById("myRange").oninput = function(){
-    var value = (this.value - this.min) / (this.max-this.min) * 100;
+
+output_manual.innerHTML = localStorage.getItem('newBrightness') || 1;
+sliderLampBrightness.value = localStorage.getItem('newBrightness') || 1;
+output.innerHTML = localStorage.getItem('autoValue') || 16;
+sliderAuto.value = localStorage.getItem('autoValue') || 16;
+
+sliderAuto.oninput = function(){
+    localStorage.setItem('autoValue', this.value);
     output.innerHTML = this.value;
 }
 
@@ -22,6 +29,7 @@ socketSlider.addEventListener('change', (event) => {
 
 sliderLampBrightness.addEventListener('change', async (event) => {
     const newBrightness = event.target.value;
+    localStorage.setItem('newBrightness', newBrightness);
     output_manual.innerHTML = newBrightness;
 
     try {
