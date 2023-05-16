@@ -7,10 +7,14 @@ const sliderAuto = document.getElementById("myRange")
 var output = document.getElementById('value-holder');
 var output_manual = document.getElementById('value-holder-manual');
 
-output_manual.innerHTML = localStorage.getItem('newBrightness') || 1;
-sliderLampBrightness.value = localStorage.getItem('newBrightness') || 1;
-output.innerHTML = localStorage.getItem('autoValue') || 16;
-sliderAuto.value = localStorage.getItem('autoValue') || 16;
+const saved_auto = localStorage.getItem('autoValue');
+const saved_brightness = localStorage.getItem('newBrightness');
+
+output.innerHTML = saved_auto || sliderAuto.getAttribute('min');
+sliderAuto.value = saved_auto || sliderAuto.getAttribute('min');
+output_manual.innerHTML = saved_brightness || sliderLampBrightness.getAttribute('min');
+sliderLampBrightness.value = saved_brightness || sliderLampBrightness.getAttribute('min');
+
 
 sliderAuto.oninput = function(){
     localStorage.setItem('autoValue', this.value);
