@@ -145,6 +145,63 @@ input#colorPicker{
     width: 100%;
 }
 
+.autoHeader{
+  width: 100%;
+}
+.block{
+  width: 33%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-items: center;
+}
+
+
+.slider-container{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.value-container{
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+#value-holder{
+  color: white;
+  font-size: 5rem;
+  width: 100%;
+}
+
+#value-holder-manual{
+  color: white;
+  font-size: 3rem;
+  width: 100%;
+}
+
+.slider-input{
+  width: 100%;
+  margin: auto;
+  height: 20px;
+  -webkit-appearance: none;
+  background: linear-gradient(to right, blue, red);
+  border-radius: 25px;
+  box-shadow: 2px 8px 13px -3px rgba(116, 114, 114, 0.75);
+}
+
+.slider-input::-webkit_slider_thumb{
+  cursor: pointer;
+  appearance: none;
+  height: 35px;
+  width: 35px;
+  background-color: #ff2a5f;
+  border-radius: 50%;
+  border: 7px solid rgb(255, 255, 255);
+}
+
+
+
 /* The switch - the box around the slider */
 .switch {
     position: relative;
@@ -276,6 +333,7 @@ input#colorPicker{
 
 .button.active::before,
 .button:active::before {
+<<<<<<< HEAD
   border-color: lightgreen; /* изменяем фоновый цвет */
 }
 
@@ -317,3 +375,8 @@ input#colorPicker{
   border: 1px solid black;
   cursor: pointer;
 }
+=======
+  border-color: lightgreen;
+}
+
+>>>>>>> 298b561277a233f58630c388a8c32f4d33c3bae2

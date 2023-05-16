@@ -31,79 +31,84 @@
 
 <body>
     <div class="container">
-
         <div class="card shadow card-home">
             <div class="card-body">
-                <h3 class="card-title"> <span class="material-symbols-outlined">
+                <h3 class="card-title ">
+                    <span class="material-symbols-outlined">
                         arrow_back
-                    </span>&nbsp; Home</h3>
+                    </span>
+                    &nbsp;Home
+                </h3>
             </div>
             <a href="index.html" class="btn btn-primary stretched-link"></a>
         </div>
 
+
+        <!-- Manual Mode Cards END -->
         <div class="cards" id="controlCards" style="display:none">
-            <!--
             <div class="card shadow">
-                <div class="card-body ">
-                    <h3 class="card-title">Channel 1</h3>
+                <div class="card-body">
+                    <h3 class="card-title ">Cooling</h3>
                 </div>
                 <a href="#" class="btn btn-primary stretched-link channelBtn" data-channel="1" id="channelButton1"></a>
             </div>
 
             <div class="card shadow">
                 <div class="card-body">
-                    <h3 class="card-title">Channel 2</h3>
-                </div>
-                <a href="#" class="btn btn-primary stretched-link channelBtn" data-channel="2" id="channelButton2"></a>
-            </div>
-
-            <div class="card shadow">
-                <div class="card-body">
-                    <h3 class="card-title">Channel 3</h3>
-                </div>
-                <a href="#" class="btn btn-primary stretched-link channelBtn" data-channel="3" id="channelButton3"></a>
-            </div>
-            -->
-
-            <div class="card shadow">
-                <div class="card-body">
-                    <h3 class="card-title ">Enable Fan</h3>
-                </div>
-                <a href="#" class="btn btn-primary stretched-link channelBtn" data-channel="1" id="channelButton1"></a>
-            </div>
-
-            <div class="card shadow">
-                <div class="card-body">
-                    <h3 class="card-title">Heater</h3>
+                    <h3 class="card-title">Heating</h3>
                 </div>
                 <a href="#" class="btn btn-primary stretched-link channelBtn" data-channel="3" id="channelButton3"></a>
             </div>
 
             <div class="card shadow">
-                <div class="card-body" style="height: 30%">
-                    <h3 class="card-title">Set lamp brightness</h3>
-                    <input type="range" min="1" max="100" style="width:100%" value="1" id="lampBrightnessSlider">
+                <div class="card-body">
+                    <h3 class="card-title">Set Temperature</h3>
+                    <div class="slider-container w-100 my-0">
+                        <div class="value-container" >
+                            <span id="value-holder-manual" class="value-holder-manual">1</span>
+                            <input type="range" min="1" max="100" value="1" class="slider-input" id="lampBrightnessSlider">
+                        </div>
+                    </div>
                 </div>
             </div>
-
-
         </div>
+        <!-- Manual Mode Cards END -->
+
+        <!-- Auto Mode Cards -->
 
         <div class="cards" id="autoMode">
-            <h3>Automatic mode is enabled</h3>
-        </div>
+            <div class="card py-5 shadow d-flex justify-center">
+                <div class="card-body d-flex justify-center">
+                    <div class="m-auto">
+                        <div class="slider-container w-100">
+                            <div class="value-container" >
+                                <span id="value-holder">16</span>
+                                <input type="range" min="16" max="40" value="0" class="slider-input" id="myRange">
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <h2>Manual Control <label class="switch">
+            </div>
+        </div>
+    
+
+    <!-- Auto Mode Cards END -->
+
+    <div style="margin-top: 10%">
+        <h2>Manual Control
+            <label class="switch">
                 <input type="checkbox" id="socketSlider">
                 <span class="slider round"></span>
-            </label></h2>
-    </div>
+            </label>
+        </h2>
     </div>
 
 
     <!-- Scripts -->
     <script type="module" src="js/temp_reg_script.js"></script>
     <script type="module" src="js/main.js"></script>
+
 </body>
 
 </html>

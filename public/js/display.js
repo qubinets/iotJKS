@@ -33,10 +33,12 @@ export function displaySensorData(humidity, temperature) {
 // light/motion information
 export function displayDbSensorData(dbSensorData) {
     dbSensorData.forEach(element => {
-        if(element.sensor_name == "PIR Sensor"){
+        if(element.sensor_name == "motion"){
             document.getElementById('motion').textContent = (element.sensor_data == 1 ? "Detected" : "Not Detected");
-        }else{
-            document.getElementById('light').textContent = (element.sensor_data == 1 ? "Detected" : "Not Detected");
+        }
+        
+        if(element.sensor_name == "light"){
+            document.getElementById('light').textContent = (element.sensor_data == 1 ? "Day" : "Night");
         }
     })
   

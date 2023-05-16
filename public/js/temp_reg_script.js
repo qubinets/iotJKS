@@ -1,6 +1,14 @@
 import * as displayFunctions from './display.js';
+const lampId = '10016705ce';
 
 const sliderLampBrightness = document.getElementById("lampBrightnessSlider");
+
+var output = document.getElementById('value-holder');
+var output_manual = document.getElementById('value-holder-manual');
+var slider = document.getElementById("myRange").oninput = function(){
+    var value = (this.value - this.min) / (this.max-this.min) * 100;
+    output.innerHTML = this.value;
+}
 
 socketSlider.addEventListener('change', (event) => {
     if (event.currentTarget.checked) {
@@ -14,7 +22,7 @@ socketSlider.addEventListener('change', (event) => {
 
 sliderLampBrightness.addEventListener('change', async (event) => {
     const newBrightness = event.target.value;
-    const deviceId = '10016705ce';
+    output_manual.innerHTML = newBrightness;
 
     try {
         const response = await fetch('/setBrightness', {
@@ -22,7 +30,7 @@ sliderLampBrightness.addEventListener('change', async (event) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ deviceId: deviceId, brightness: newBrightness }),
+            body: JSON.stringify({ deviceId: lampId, brightness: newBrightness }),
         });
 
         if (!response.ok) {
