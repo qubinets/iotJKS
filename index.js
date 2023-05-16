@@ -115,7 +115,7 @@ app.get('/setChannel', async (req, res) => {
 app.get('/getTempSensorData', async (req, res) => {
     try {
         auth = await connection.getCredentials();
-        
+
         const keyCon = new ewelink({
             at: auth.at,
             apiKey: auth.apiKey,
@@ -124,7 +124,6 @@ app.get('/getTempSensorData', async (req, res) => {
 
         const deviceId = req.query.deviceid;
         const sensorData = await keyCon.getDevice(deviceId);
-        console.log(sensorData);
         console.log(`/getTempSensorData query ${Date.now()}`);
         res.send(sensorData.params);
     } catch (error) {
