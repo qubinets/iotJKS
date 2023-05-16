@@ -2,6 +2,13 @@ import * as displayFunctions from './display.js';
 
 const sliderLampBrightness = document.getElementById("lampBrightnessSlider");
 
+var output = document.getElementById('value-holder');
+var slider = document.getElementById("myRange").oninput = function(){
+    var value = (this.value - this.min) / (this.max-this.min) * 100;
+    localStorage.setItem('tempValue', this.value);
+    output.innerHTML = this.value;
+}
+
 socketSlider.addEventListener('change', (event) => {
     if (event.currentTarget.checked) {
         document.getElementById('controlCards').style.display = "flex";

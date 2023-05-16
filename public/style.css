@@ -147,13 +147,46 @@ input#colorPicker{
   justify-items: center;
 }
 
-.gaugeDiv{
+
+.slider-container{
   width: 100%;
-  margin-top: 10%;
   display: flex;
-  flex-wrap: wrap;
-  justify-items: center;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
+
+.value-container{
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+#value-holder{
+  color: white;
+  font-size: 5rem;
+}
+
+.slider-input{
+  width: 100%;
+  margin: auto;
+  height: 20px;
+  -webkit-appearance: none;
+  background: linear-gradient(to right, blue, red);
+  border-radius: 25px;
+  box-shadow: 2px 8px 13px -3px rgba(116, 114, 114, 0.75);
+}
+
+.slider-input::-webkit_slider_thumb{
+  cursor: pointer;
+  appearance: none;
+  height: 35px;
+  width: 35px;
+  background-color: #ff2a5f;
+  border-radius: 50%;
+  border: 7px solid rgb(255, 255, 255);
+}
+
+
 
 /* The switch - the box around the slider */
 .switch {
