@@ -151,7 +151,6 @@ input#colorPicker{
 .slider-container{
   width: 100%;
   display: flex;
-  align-items: center;
   justify-content: center;
   flex-direction: column;
 }
@@ -164,6 +163,13 @@ input#colorPicker{
 #value-holder{
   color: white;
   font-size: 5rem;
+  width: 100%;
+}
+
+#value-holder-manual{
+  color: white;
+  font-size: 3rem;
+  width: 100%;
 }
 
 .slider-input{

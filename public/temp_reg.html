@@ -62,8 +62,13 @@
 
             <div class="card shadow">
                 <div class="card-body">
-                    <h3 class="card-title">Set temperature</h3>
-                    <input type="range" min="1" max="100" style="width:100%" value="1" id="lampBrightnessSlider">
+                    <h3 class="card-title">Set Temperature</h3>
+                    <div class="slider-container w-100 my-0">
+                        <div class="value-container" >
+                            <span id="value-holder-manual" class="value-holder-manual">1</span>
+                            <input type="range" min="1" max="100" value="1" class="slider-input" id="lampBrightnessSlider">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -80,7 +85,6 @@
                                 <span id="value-holder">16</span>
                                 <input type="range" min="16" max="40" value="0" class="slider-input" id="myRange">
                             </div>
-                            
                         </div>
                     </div>
                 </div>
