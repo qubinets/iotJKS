@@ -23,7 +23,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.24.0/dist/axios.min.js"></script>
+
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet"
@@ -32,18 +33,32 @@
 
 <body>
     <div class="container">
-        <div class="card shadow card-home">
-            <div class="card-body">
-                <h3 class="card-title ">
-                    <span class="material-symbols-outlined">
-                        arrow_back
-                    </span>
-                    &nbsp;Home
-                </h3>
+        <div style="width: 100%;display: flex;">
+            <div class="temp-ledBtn">
+                <div class="card shadow card-home">
+                    <div class="card-body">
+                        <h3 class="card-title ">
+                            <span class="material-symbols-outlined">
+                                arrow_back
+                            </span>
+                            &nbsp;Home
+                        </h3>
+                    </div>
+                    <a href="index.html" class="btn btn-primary stretched-link"></a>
+                </div>
             </div>
-            <a href="index.html" class="btn btn-primary stretched-link"></a>
+            <div id="socketControl">
+                <div class="button" id="toggleLed">
+                    <div class="bar">
+                    </div>
+                </div>
+            </div>
         </div>
 
+
+        <!-- <div class="button" id="toggleLed">
+            <div class="bar"></div>
+        </div> -->
         <div class="cards">
             <div class="card card-control shadow">
                 <h3>Led brightness control</h3>
@@ -53,35 +68,77 @@
             <div class="card card-control shadow">
                 <div class="range">
                     <h3>Led speed control</h3>
-                    <input type="range" id="ledSpeedSlider" style="width: 100%" min="0" max="40">
+                    <input type="range" id="ledSpeedSlider" style="width: 100%" min="1" max="10" value="1">
+                </div>
+            </div>
+
+            <div class="card card-control shadow">
+                <div class="color-picker-container">
+                    <input type="range" min="0" max="360" value="0" class="cslider" id="colorSlider">
                 </div>
             </div>
 
             <div class="card card-control shadow">
                 <div class="range">
-                    <h3>Color picker</h3>
-                    <input type="color" id="colorPicker" value="#FF0000">
+                    <div class="mode-container">
+                        <h3>Mode:</h3>
+                        <h3 class="toggle-label" id="ledSchemeLabel">Default</h3>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="ledSchemeSelect">
+                        <span class="slider round"></span>
+                    </label>
                 </div>
-            </div>
-
-            <div class="card card-control shadow">
-                <h3>Mode picker</h3>
-                <select id="ledSchemeSelect" class="form-select">
-                    <option value="0">Mode 1</option>
-                    <option value="1">Mode 2</option>
-                    <option value="2">Mode 3</option>
-                    <option value="3">Mode 4</option>
-                    <option value="4">Mode 5</option>
-                </select>
             </div>
         </div>
     </div>
 
-
-
-
     <!-- Scripts -->
     <script type="module" src="js/indoor_script.js"></script>
+
 </body>
+<script>
+    document.getElementById('colorSlider').addEventListener('input', function (e) {
+        const h = this.value / 360; // Hue
+        const s = 1; // Saturation
+        const l = 0.5; // Lightness
+        const rgb = hslToRgb(h, s, l);
+        // Преобразовать массив RGB в строку
+        const rgbString = rgb.join(',');
+        // Отправить команду цвета
+        axios.get(`http://192.168.1.2/cm?cmnd=Color%20${rgbString}`)
+            .then(response => {
+                console.log(response);
+                // Обновить интерфейс или выполнить другие действия
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    });
+    function hslToRgb(h, s, l) {
+        let r, g, b;
+
+        if (s == 0) {
+            r = g = b = l; // achromatic
+        } else {
+            let hue2rgb = function hue2rgb(p, q, t) {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1 / 6) return p + (q - p) * 6 * t;
+                if (t < 1 / 2) return q;
+                if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            }
+
+            let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            let p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1 / 3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1 / 3);
+        }
+
+        return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+    }
+</script>
 
 </html>
