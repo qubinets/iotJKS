@@ -19,7 +19,7 @@ function getDoorSensorData() {
         .then((response) => response.json())
         .then(function (sensorData) {
             isDoorOpen = sensorData.switch;
-            console.log(isDoorOpen);
+            //console.log(isDoorOpen);
         })
         .catch();
 }
@@ -28,7 +28,7 @@ function getDbSensorsData() {
     fetch(`/getSensorsDataFromDb`)
         .then((response) => response.json())
         .then((sensorData) => {
-            console.log(sensorData);
+            //console.log(sensorData);
             dbSensorData = sensorData;
             displayFunctions.displayDbSensorData(dbSensorData);
         })
@@ -38,5 +38,5 @@ function getDbSensorsData() {
 getDoorSensorData();
 getDbSensorsData();
 
-setInterval(getDbSensorsData, 1000);
+setInterval(getDbSensorsData, 5000);
 setInterval(getDoorSensorData, 5000);

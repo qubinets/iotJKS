@@ -1,5 +1,6 @@
 import * as displayFunctions from './display.js';
 const lampId = '10016705ce';
+const switchId = '10017b7136';
 
 const sliderLampBrightness = document.getElementById("lampBrightnessSlider");
 const sliderAuto = document.getElementById("myRange")
@@ -7,25 +8,65 @@ const sliderAuto = document.getElementById("myRange")
 var output = document.getElementById('value-holder');
 var output_manual = document.getElementById('value-holder-manual');
 
-const saved_auto = localStorage.getItem('autoValue');
-const saved_brightness = localStorage.getItem('newBrightness');
 
-output.innerHTML = saved_auto || sliderAuto.getAttribute('min');
-sliderAuto.value = saved_auto || sliderAuto.getAttribute('min');
-output_manual.innerHTML = saved_brightness || sliderLampBrightness.getAttribute('min');
-sliderLampBrightness.value = saved_brightness || sliderLampBrightness.getAttribute('min');
+document.addEventListener("DOMContentLoaded", (loaded) => {
+    const saved_auto = localStorage.getItem('autoValue');
+    const saved_brightness = localStorage.getItem('newBrightness');
+    const autoModeDisabled = localStorage.getItem('autoModeDisabled');
 
+    output.innerHTML = saved_auto || sliderAuto.getAttribute('min');
+    sliderAuto.value = saved_auto || sliderAuto.getAttribute('min');
+    output_manual.innerHTML = saved_brightness || sliderLampBrightness.getAttribute('min');
+    sliderLampBrightness.value = saved_brightness || sliderLampBrightness.getAttribute('min');
+})
 
-sliderAuto.oninput = function(){
+sliderAuto.oninput = function () {
     localStorage.setItem('autoValue', this.value);
     output.innerHTML = this.value;
+
+    var tempData = localStorage.getItem('temperature');
+    var humidityData = localStorage.getItem('humidity');
+    console.log("Temp, humidity: ", tempData, humidityData)
+
+    var temperature_diff = tempData - this.value;
+
+    console.log("Actual and desired temp difference: ", temperature_diff)
+    const map = (value, x1, y1, x2, y2) => (value - x1) * (y2 - x2) / (y1 - x1) + x2;
+    // If needs to be colder
+    if (temperature_diff > 0) {
+        console.log("Fan - on, Heating - off")
+        setChannel(1, true);
+        setTimeout(setChannel(3, false), 3000); 
+    } 
+    // If needs to be warmer
+    else{
+        console.log("Fan - off, Heating - on")
+        setChannel(1, false);
+        setTimeout(setChannel(3, true), 3000);
+        setTimeout(setBrightness(100), 3000); 
+    }
+}
+
+// Set switch channel API call
+function setChannel(channel, state) {
+    axios.get(`/setChannel?deviceid=${switchId}&channel=${channel}&state=${state}`, { timeout: 20000 })
+        .then(response => {
+            console.log(response);
+            if (response.data && response.data.error) {
+                throw new Error(response.data.msg || 'Server error');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        })
 }
 
 socketSlider.addEventListener('change', (event) => {
+    localStorage.setItem('autoModeDisabled', event.currentTarget.checked);
     if (event.currentTarget.checked) {
         document.getElementById('controlCards').style.display = "flex";
         document.getElementById('autoMode').style.display = "none";
-    }else{
+    } else {
         document.getElementById('controlCards').style.display = "none";
         document.getElementById('autoMode').style.display = "flex";
     }
@@ -36,6 +77,11 @@ sliderLampBrightness.addEventListener('change', async (event) => {
     localStorage.setItem('newBrightness', newBrightness);
     output_manual.innerHTML = newBrightness;
 
+    await setBrightness(newBrightness);
+});
+
+
+async function setBrightness(newBrightness) {
     try {
         const response = await fetch('/setBrightness', {
             method: 'POST',
@@ -59,4 +105,4 @@ sliderLampBrightness.addEventListener('change', async (event) => {
     } catch (error) {
         console.error('Error sending brightness change:', error);
     }
-});
+}

@@ -28,6 +28,9 @@ const client = new Client({
 })
 client.connect()
 
+var connection;
+var auth;
+
 app.get('/getWeatherData', async (req, res) => {
     const weatherdata = await fetch(`http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${WEATHER_LAT},${WEATHER_LON}`);
     const weatherJSON = await weatherdata.json();
@@ -39,13 +42,13 @@ app.get('/getDevice', async (req, res) => {
     try {
         const deviceId = req.query.deviceid;
 
-        const connection = new ewelink({
-            email: login,
-            password: pass,
-            region: region,
+        const keyCon = new ewelink({
+            at: auth.at,
+            apiKey: auth.apiKey,
+            region: auth.region,
         });
 
-        const device = await connection.getDevice(deviceId);
+        const device = await keyCon.getDevice(deviceId);
         if (device) {
             console.log("/getDevice query");
             res.json(device.params);
@@ -60,13 +63,13 @@ app.get('/getDevice', async (req, res) => {
 
 app.get('/getDevices', async (req, res) => {
     try {
-        const connection = new ewelink({
-            email: login,
-            password: pass,
-            region: region,
+        const keyCon = new ewelink({
+            at: auth.at,
+            apiKey: auth.apiKey,
+            region: auth.region,
         });
 
-        const devices = await connection.getDevices();
+        const devices = await keyCon.getDevices();
         console.log("/getDevices query")
         res.json(devices);
     } catch (error) {
@@ -80,23 +83,22 @@ app.get('/setChannel', async (req, res) => {
     const channel = parseInt(req.query.channel);
     const state = req.query.state;
 
-    const connection = new ewelink({
-        email: login,
-        password: pass,
-        region: region,
+    const keyCon = new ewelink({
+        at: auth.at,
+        apiKey: auth.apiKey,
+        region: auth.region,
     });
 
     try {
         // Получить текущий статус 
-        const device = await connection.getDevice(deviceId);
-        //console.log(device);
+        const device = await keyCon.getDevice(deviceId);
         if (device.error == null) {
-            console.log(device.params.switches[channel-1]);
+            console.log(device.params.switches[channel - 1]);
             var currentChannelState = device.params.switches[channel - 1].switch;
 
             // Проверить, необходимо ли переключать состояние
             if (state !== currentChannelState) {
-                const result = await connection.toggleDevice(deviceId, channel);
+                const result = await keyCon.toggleDevice(deviceId, channel);
                 console.log("/setChannel query");
                 res.json(result);
             } else {
@@ -111,17 +113,16 @@ app.get('/setChannel', async (req, res) => {
 });
 
 app.get('/getTempSensorData', async (req, res) => {
-    const connection = new ewelink({
-        email: login,
-        password: pass,
-        region: region,
-    })
-    //const auth = await connection.getCredentials();
+    const keyCon = new ewelink({
+        at: auth.at,
+        apiKey: auth.apiKey,
+        region: auth.region,
+    });
 
     try {
         const deviceId = req.query.deviceid;
-        const sensorData = await connection.getDevice(deviceId);
-        console.log("/getTempSensorData query");
+        const sensorData = await keyCon.getDevice(deviceId);
+        console.log(`/getTempSensorData query ${Date.now()}`);
         res.json(sensorData.params);
     } catch (error) {
         console.error('Error fetching sensor data:', error);
@@ -171,28 +172,16 @@ app.post('/setBrightness', async (req, res) => {
     }
 });
 
-// app.post('/setSwitchState', async (req, res) => {
-//     const deviceId = req.body.deviceid;
-//     const newState = req.body.state;
-//     const result = await connection.setDevicePowerState(deviceId, newState);
-//     if (result && result.error === 0) {
-//         console.log("/setSwitchState query");
-//         res.json({ success: true });
-//     } else {
-//         res.status(500).json({ error: 'Failed to set switch state' });
-//     }
-// });
-
 app.get('/getDoorSensorData', async (req, res) => {
-    const connection = new ewelink({
-        email: login,
-        password: pass,
-        region: region,
+    const keyCon = new ewelink({
+        at: auth.at,
+        apiKey: auth.apiKey,
+        region: auth.region,
     });
 
     try {
         const deviceId = req.query.deviceid;
-        const sensorData = await connection.getDevice(deviceId);
+        const sensorData = await keyCon.getDevice(deviceId);
         console.log("/getDoorSensorData query");
         res.json(sensorData.params);
     } catch (error) {
@@ -206,13 +195,13 @@ app.get('/setDevicePowerState', async (req, res) => {
         const deviceId = req.query.deviceid;
         const state = req.query.state; // Добавьте это
 
-        const connection = new ewelink({
-            email: login,
-            password: pass,
-            region: region,
+        const keyCon = new ewelink({
+            at: auth.at,
+            apiKey: auth.apiKey,
+            region: auth.region,
         });
 
-        const device = await connection.setDevicePowerState(deviceId, state);
+        const device = await keyCon.setDevicePowerState(deviceId, state);
         if (device) {
             console.log("/setDevicePowerState query")
             res.json(device.params);
@@ -226,16 +215,26 @@ app.get('/setDevicePowerState', async (req, res) => {
 });
 
 app.get('/getSensorsDataFromDb', async (req, res) => {
-        client.query('select distinct on (sensor_name) * FROM sensors_data ORDER BY sensor_name, timestamp DESC', (error, results) => {
-            if (error) {
-                throw error
-            }
-            console.log("/getSensorDataFromDb query")
-            res.status(200).json(results.rows)
-        })
+    client.query('select distinct on (sensor_name) * FROM sensors_data ORDER BY sensor_name, timestamp DESC', (error, results) => {
+        if (error) {
+            throw error
+        }
+        console.log("/getSensorDataFromDb query")
+        res.status(200).json(results.rows)
+    })
 })
 
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
-});
 
+const configureApplication = async () => {
+    connection = new ewelink({
+        email: login,
+        password: pass,
+        region: region,
+    });
+    auth = await connection.getCredentials();
+    app.listen(port, () => {
+        console.log(`Server is running at http://localhost:${port}`);
+    });
+}
+
+configureApplication();

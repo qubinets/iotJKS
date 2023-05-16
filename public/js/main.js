@@ -9,7 +9,7 @@ const channelButtons = document.querySelectorAll(".channelBtn");
 
 // Set switch channel API call
 function setChannel(channel, state) {
-    axios.get(`/setChannel?deviceid=${switchId}&channel=${channel}&state=${state}`, {timeout: 9000})
+    axios.get(`/setChannel?deviceid=${switchId}&channel=${channel}&state=${state}`, { timeout: 5000 })
         .then(response => {
             console.log(response);
             if (response.data && response.data.error) {
@@ -18,24 +18,25 @@ function setChannel(channel, state) {
         })
         .catch(error => {
             console.error(error);
-            setChannel(channel, state);
         })
-        .finally(() => {
-
-        });
 }
 
 // Call temperature/humidity sensor API and get data
-function getTempSensorData() {
-    fetch(`/getTempSensorData?deviceid=${tempHumiditySensorId}`)
-        .then((response) => {
-            response.json()
-        })
-        .then(function (sensorData) {
-            console.log(sensorData.humidity, sensorData.temperature)
-            displayFunctions.displaySensorData(sensorData.humidity, sensorData.temperature);
-        })
-        .catch(error => console.log(error));
+async function getTempSensorData() {
+    try {
+        let fetchResult = await fetch(`/getTempSensorData?deviceid=${tempHumiditySensorId}`)
+        let response = await fetchResult.json();
+        if (response && response.humidity && response.temperature) {
+            console.log(response.humidity, response.temperature);
+            localStorage.setItem('humidity', response.humidity / 100);
+            localStorage.setItem('temperature', response.temperature / 100);
+            displayFunctions.displaySensorData(response.humidity, response.temperature);
+        }
+    } catch(error){
+        console.log(error)
+        setTimeout(getTempSensorData(), 1500); 
+        
+    };
 }
 
 // Event Listeners
@@ -45,7 +46,7 @@ channelButtons.forEach(button => {
     button.addEventListener('click', () => {
         const channel = button.getAttribute('data-channel');
         const newState = !switchStates[channel - 1];
-        switchStates[channel-1] = newState;
+        switchStates[channel - 1] = newState;
         console.log(switchStates, button.getAttribute('data-channel'), newState);
         //displayChannelSwitch(button, newState);
 
@@ -56,7 +57,7 @@ channelButtons.forEach(button => {
 
 // Call functions periodically
 getTempSensorData();
-setInterval(getTempSensorData, 10000);
+setInterval(getTempSensorData, 15000);
 
 
 /*// API requests
