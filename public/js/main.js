@@ -25,15 +25,15 @@ function setChannel(channel, state) {
 async function getTempSensorData() {
     try {
         let fetchResult = await axios.get(`/getTempSensorData?deviceid=${tempHumiditySensorId}`)
-        console.log(fetchResult)
-        /*
+        let response = fetchResult.data;
+        console.log(response)
         if (response && response.humidity && response.temperature) {
             console.log(response.humidity, response.temperature);
             localStorage.setItem('humidity', response.humidity / 100);
             localStorage.setItem('temperature', response.temperature / 100);
             displayFunctions.displaySensorData(response.humidity, response.temperature);
         }
-        */
+        
     } catch(error){
         console.log(error)
     };
