@@ -29,16 +29,27 @@ sliderAuto.onchange = async function () {
     console.log("Temp, humidity: ", tempData, humidityData)
 
     var temperature_diff = tempData - this.value;
+    var brightness_needed;
+    if (temperature_diff < 0) {
+        let val = temperature_diff * temperature_diff;
+        if (val >= 100) {
+            val = 100;
+        }
+        brightness_needed = val;
+    } else{
+        brightness_needed = 0;
+    }
 
-    console.log("Actual and desired temp difference: ", temperature_diff)
+    console.log("Actual and desired temp difference: ", temperature_diff);
+    console.log("Brightness needed to compensate: ", brightness_needed);
     // If needs to be colder
     if (temperature_diff > 0) {
         console.log("Fan - on, Heating - off")
         await setChannel(1, "ON");
         await setChannel(3, "OFF")
-    } 
+    }
     // If needs to be warmer
-    else{
+    else {
         console.log("Fan - off, Heating - on")
         await setChannel(1, "OFF");
         await setChannel(3, "ON");
